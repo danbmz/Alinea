@@ -1,8 +1,8 @@
 {
-  "name": "uptask-php-mvc-sass",
+  "name": "alinea",
   "version": "1.0.0",
-  "description": "UpTask - Curso Desarrollo web Completo",
-  "author": "Juan De la torre @codigoconjuan",
+  "description": "Alinea - App de gestion de tareas",
+  "author": "Daniel Bermudez",
   "main": "index.js",
   "type": "module",
   "scripts": {

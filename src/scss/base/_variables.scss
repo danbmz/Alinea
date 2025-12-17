@@ -20,7 +20,16 @@ $gris: #6b7280;
 $grisOscuro: #4B5563;
 $negro: #000;
 
-$rojo: rgb(169, 0, 0);
-$verde: rgb(0, 120, 0);
+$red: rgb(255, 40, 40);
+$green: rgb(31, 255, 31);
 
-$separacion: 5rem;
+// Tamaños de fuente
+$font-size-small: 1.2rem;
+$font-size-medium: 1.6rem;
+$font-size-large: 2.4rem;
+$font-size-xlarge: 3.2rem;
+
+// Tamaños de borde
+$border-radius-small: 4px;
+$border-radius-medium: 8px;
+$border-radius-large: 12px;

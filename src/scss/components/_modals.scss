@@ -1,0 +1,47 @@
+@use 'base/variables' as *;
+@use 'base/mixins' as *;
+
+.modal-container {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    inset: 0;
+    background-color: rgba($negro, 0.5);
+    animation: fadeIn ease-in 0.3s; // Agregamos la animacion o keyframes con la propiedad animation.
+    &.fade-Out {
+        animation: fadeOut ease-in 0.3s;
+    }
+}
+
+.modal-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem;
+    background-color: $blanco;
+    border-radius: $border-radius-large;
+    box-shadow: 0 4px 6px rgba($negro, 0.2);
+    width: min(90%, 500px);
+    margin: 0 auto;
+}
+
+
+// Animaciones de desvanecimiento
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

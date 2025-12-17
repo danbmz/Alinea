@@ -1,11 +1,12 @@
 {
-    "name": "juandelatorre/up-task_mvc",
-    "description": "Proyecto UpTask MVC, PHP 8, SASS",
+    "name": "danielbermudez/alinea",
+    "description": "Proyecto Alinea , gestor de tareas",
     "type": "project",
     "autoload": {
         "psr-4": {
             "MVC\\" : "./",
-            "Controllers\\" : "./controllers",
+            "Controllers\\" : "./controllers/views",
+            "ApiControllers\\" : "./controllers/api",
             "Model\\" : "./models"
         }
     },

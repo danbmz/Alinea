@@ -1,0 +1,27 @@
+@use 'base/variables' as *;
+@use 'base/mixins' as *;
+
+.alert {
+    padding: .5rem;
+    border-radius: 0.5rem;
+    font-size: 1.2rem;
+    color: $blanco;
+    text-align: center;
+
+    &.error {
+        background-color: $red;
+    }
+
+    &.success {
+        background-color: $green;
+    }
+}
+.alert:last-of-type{
+    margin-bottom: 1rem;
+}
+
+.alerts-container {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}

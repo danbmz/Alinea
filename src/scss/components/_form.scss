@@ -1,0 +1,81 @@
+@use "base/variables" as v;
+@use "base/mixins" as m;
+
+.center-form{
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+.form-container {
+    width: min(90%, 600px);
+    display: flex ;
+    flex-direction: column;
+    gap: 3rem;
+    background-color: v.$blanco;
+    padding: 3rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+}
+.form-title {
+    text-align: center;
+    font-size: 3rem;
+    margin: 0;
+}
+.form-subtitle {
+    text-align: center;
+    font-size: 1.3rem;
+    // color: v.$gris-opaco;
+    line-height: 1.4;
+    margin: 0;
+}
+.general-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+/* --- Grupos de formulario --- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 1.5rem;
+    // color: v.$gris-opaco;
+    margin-bottom: 0.6rem;
+}
+
+.form-input {
+    padding: 1rem 1.2rem;
+    border: 1px solid v.$gris;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+    // border-color: v.$lila; /* Azul violeta */
+    box-shadow: 0 0 6px rgba(79, 70, 229, 0.3);
+}
+/* --- Links --- */
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    margin-top: 0.8rem;
+}
+
+.link {
+    // color: v.$lila;
+    text-decoration: none;
+    transition: color 0.2s;
+    &.confirm {
+        font-size: 2rem;
+    }
+}
+
+.link:hover {
+    // color: v.$lila-opaco;
+    font-weight: 600;
+}

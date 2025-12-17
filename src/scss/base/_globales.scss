@@ -12,13 +12,16 @@ body {
     font-family: v.$fuente_textos;
     font-size: 1.6rem;
     min-height: 100%;
+    &.no-scroll {
+        overflow: hidden;
+    }
 }
-.contenedor {
+.container {
     width: 95%;
     max-width: 1200px;
     margin: 0 auto;
 }
-.contenedor-sm {
+.container-sm {
     max-width: 70rem;
     margin: 0 auto;
 }

@@ -1,0 +1,1 @@
+export async function registerUser(t){const a=await fetch("/api/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(t)}),e=await a.json();return{ok:a.ok,status:a.status,data:e}}

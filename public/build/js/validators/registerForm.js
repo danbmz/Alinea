@@ -1,0 +1,1 @@
+export function validateRegisterForm({name:s,email:o,password:e,confirmPassword:r}){const a=[];if(!(s&&o&&e&&r))return a.push("Todos los campos son obligatorios"),a;e.length<6&&a.push("La contraseña debe tener al menos 6 caracteres"),e!==r&&a.push("Las contraseñas no coinciden");return/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(o)||a.push("El correo no es válido"),a}
