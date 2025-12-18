@@ -10,8 +10,7 @@ $router->get('/login', [Controllers\AuthController::class, 'login']);
 // crear cuenta nueva
 $router->get('/register', [Controllers\AuthController::class, 'register']);
 // Mensajes - confirmar cuenta
-$router->get('/verify', [Controllers\AuthController::class, 'verifyAccount']);
-$router->get('/message', [Controllers\AuthController::class, 'message']);
+$router->get('/verify-account', [Controllers\AuthController::class, 'verifyAccount']);
 // reestablecer password
 $router->get('/forgot', [Controllers\AuthController::class, 'forgotPassword']);
 $router->get('/reset', [Controllers\AuthController::class, 'resetPassword']);
@@ -21,6 +20,7 @@ $router->post('/api/login', [ApiControllers\AuthApiController::class, 'loginAPI'
 $router->post('/api/register', [ApiControllers\AuthApiController::class, 'registerAPI']);
 $router->post('/api/forgot', [ApiControllers\AuthApiController::class, 'forgotPasswordAPI']);
 $router->post('/api/reset', [ApiControllers\AuthApiController::class, 'resetPasswordAPI']);
+$router->post('/api/verify-account', [ApiControllers\AuthApiController::class, 'verifyAccountAPI']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

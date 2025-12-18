@@ -1,1 +1,1 @@
-export function showAlerts(e){const t=document.querySelector(".alerts-container");t.innerHTML="",e.forEach(e=>{const n=document.createElement("div");n.classList.add("alert","error"),n.textContent=e,t.appendChild(n),setTimeout(()=>{n.remove()},2e3)})}
+export function showAlerts(e){var t=document.querySelector(".alerts-container");t.innerHTML="",e.forEach(function(e){var n=document.createElement("div");n.classList.add("alert","error"),n.textContent=e,t.appendChild(n),setTimeout(function(){n.remove()},2e3)})}

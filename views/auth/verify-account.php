@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>  
+    <div class="loader-container">
+        <p>Verificando cuenta...</p>
+        <div class="loader"></div>
+    </div>
+</body>
+</html>
+
+<?php
+    $script = "<script type='module' src='build/js/pages/auth/verify-account.js'></script>";
+?>

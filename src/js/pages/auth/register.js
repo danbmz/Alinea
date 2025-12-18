@@ -1,7 +1,7 @@
-import { validateRegisterForm } from "../validators/registerForm.js";
-import { registerUser } from "../api/auth.js"; 
-import { showAlerts } from "../helpers/alerts.js";
-import { showModal } from "../components/modals.js";
+import { validateRegisterForm } from "../../validators/registerForm.js";
+import { registerUser } from "../../api/auth.js"; 
+import { showAlerts } from "../../helpers/alerts.js";
+import { showModal } from "../../components/modals.js";
 
 // Seleccionar elementos del DOM
 const form = document.querySelector('.general-form');

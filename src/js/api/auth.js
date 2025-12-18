@@ -17,3 +17,23 @@ export async function registerUser(dataForm) {
         data
     };
 }
+
+export async function verifyAccount(token) {
+    const URL = 'http://localhost:3000/api/verify-account';
+
+    const response = await fetch(URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ token })
+    });
+
+    const data = await response.json(); 
+
+    return {
+        ok: response.ok,
+        status: response.status,
+        data
+    }
+}

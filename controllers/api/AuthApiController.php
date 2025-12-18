@@ -2,6 +2,7 @@
 
 namespace ApiControllers;
 
+use Classes\Email;
 use Model\User;
 
 class AuthApiController {
@@ -26,7 +27,8 @@ class AuthApiController {
             $user->createToken();
 
             // Enviar email de confirmación (lógica no implementada aquí)
-
+            $email = new Email($user->email, $user->name, $user->token);
+            $email->confirmarEmail();
 
             // Guardar el usuario en la base de datos
             $result = $user->save();
@@ -43,18 +45,57 @@ class AuthApiController {
         }
     }
 
+    public function verifyAccountAPI() {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
 
-    public static function loginAPI() {
+            // Obtener token del cuerpo de la solicitud
+            $token = $data['token'] ?? null;
+
+            if (!$token) {
+                return $this->response(400, 'Token inválido');
+            }
+
+            // Buscar usuario por token
+            $user = User::where('token', $token);
+
+            // Buscar usuario por cofirmprobación previa
+            if (!$user) {
+                return $this->response(404, 'Usuario no encontrado o token inválido');
+            }
+            
+            if ($user->confirmed ) {
+                return $this->response(200, 'La cuenta ya ha sido verificada', ['status' => 'already_verified']);
+            }
+
+
+            // Cambiar estado de la cuenta a confirmada
+            $user->confirmed = 1;
+
+            $result = $user->save();
+
+            if ($result) {
+                return $this->response(200, 'Cuenta verificada correctamente');
+            } else {
+                return $this->response(500, 'Error al verificar la cuenta');
+            }
+
+        } catch (\Throwable $e) {
+            return $this->response(500, 'Error interno del servidor');
+        }
+    }
+
+    public function loginAPI() {
         // Lógica para iniciar sesión
         echo 'Login API';
     }
 
-    public static function forgotPasswordAPI() {
+    public function forgotPasswordAPI() {
         // Lógica para recuperar contraseña
         echo 'Forgot Password API';
     }
 
-    public static function resetPasswordAPI() {
+    public function resetPasswordAPI() {
         // Lógica para restablecer contraseña
         echo 'Reset Password API';
     }

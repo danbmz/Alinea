@@ -7,10 +7,12 @@
             "MVC\\" : "./",
             "Controllers\\" : "./controllers/views",
             "ApiControllers\\" : "./controllers/api",
-            "Model\\" : "./models"
+            "Model\\" : "./models",
+            "Classes\\" : "./classes"
         }
     },
     "require": {
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
+        "vlucas/phpdotenv": "^5.6"
     }
 }

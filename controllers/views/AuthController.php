@@ -27,10 +27,9 @@ class AuthController {
         ]);
     }
     // Funciones que muestran mensajes
-    public static function verifyAccount() {
-        debuguear('Verify Account Controller');
-    }
-    public static function message() {
-        debuguear('message Controller');
+    public static function verifyAccount(Router $router) {
+        $router->render('auth/verify-account', [
+            'titulo' => '| Verificando Cuenta'
+        ]);
     }
 }

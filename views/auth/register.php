@@ -40,6 +40,6 @@
 
 <?php 
     $script = "
-        <script type='module' src='/build/js/pages/register.js'></script>
+        <script type='module' src='/build/js/pages/auth/register.js'></script>
     ";
 ?>
