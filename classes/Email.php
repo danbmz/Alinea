@@ -63,7 +63,7 @@ class Email {
         $phpmailer->Password = $_ENV['EMAIL_PASS'];
 
         // 2.Configurar encabezado del email
-        $phpmailer->setFrom('cuentas@BarberShop.com');
+        $phpmailer->setFrom('cuentas@Alinea.com');
         $phpmailer->addAddress($this->email);
         $phpmailer->Subject = 'Reestablecer contraseña';
 
@@ -74,15 +74,15 @@ class Email {
         // 4.Definir el contenido
         $contenido  = '<html>';
         $contenido .= '<body>';
-        $contenido .= "<p><strong>Hola " . $this->nombre . "</strong>, has solicitado reestablecer tu contraseña en <b>BarberShopElite</b>. Para continuar haz click en el siguiente enlace:</p>";
-        $contenido .= "<p><a href='" . $_ENV['APP_URL'] . "/reset-password?token=" . $this->token . "' target='_blank'>Reestablecer contraseña</a></p>";
+        $contenido .= "<p><strong>Hola " . $this->nombre . "</strong>, has solicitado reestablecer tu contraseña en <b>Alinea</b>. Para continuar haz click en el siguiente enlace:</p>";
+        $contenido .= "<p><a href='" . $_ENV['APP_URL'] . "/reset?token=" . $this->token . "' target='_blank'>Reestablecer contraseña</a></p>";
         $contenido .= "<p>Si tú no solicitaste este cambio puedes ignorar este mensaje.</p>";
         $contenido .= '</body>';
         $contenido .= '</html>';
 
         // 5.Agregamos el contenido al cuerpo del correo
         $phpmailer->Body = $contenido;
-        $phpmailer->AltBody = 'Este mensaje es para que puedas reestablecer la contraseña de tu cuenta en BarberShopElite';
+        $phpmailer->AltBody = 'Este mensaje es para que puedas reestablecer la contraseña de tu cuenta en Alinea';
 
         // 6.Enviar el email
         $resultado = $phpmailer->send();

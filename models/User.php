@@ -64,6 +64,23 @@ class User extends ActiveRecord {
         return self::$alerts;
     }
 
+    public static function validateEmail($email) {
+
+        $user = self::where('email', $email);
+        
+        if(!trim($email)) {
+            self::$alerts['error'][] = 'El correo es obligatorio';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            self::$alerts['error'][] = 'El formato del correo no es válido';
+        } elseif (strlen($email) > 60) {
+            self::$alerts['error'][] = 'El correo no puede exceder 60 caracteres';
+        } elseif (!$user || !$user->confirmed) {
+            self::$alerts['error'][] = 'Correo no registrado o cuenta no confirmada';
+        }
+
+        return self::$alerts;
+    }
+
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
     }

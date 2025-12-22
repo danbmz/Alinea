@@ -37,3 +37,24 @@ export async function verifyAccount(token) {
         data
     }
 }
+
+export async function forgotPassword(email) {
+    const URL = 'http://localhost:3000/api/forgot';
+
+    const response = await fetch(URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+    });
+
+    const data = await response.json();
+    // console.log(data);
+
+    return {
+        ok: response.ok,
+        status: response.status,
+        data
+    };
+}

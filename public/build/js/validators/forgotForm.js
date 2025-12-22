@@ -1,0 +1,1 @@
+export function validateForgotPasswordForm(o){var r=[];return o?/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(o)||r.push("El correo electrónico no es válido."):r.push("El correo electrónico es obligatorio."),r}

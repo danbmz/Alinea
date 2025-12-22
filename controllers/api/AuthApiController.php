@@ -91,8 +91,42 @@ class AuthApiController {
     }
 
     public function forgotPasswordAPI() {
-        // Lógica para recuperar contraseña
-        echo 'Forgot Password API';
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            // Obtener email y verificar que exista del cuerpo de la solicitud
+            $email = $data['email'] ?? null;
+            if (!$email) {
+                return $this->response(400, 'Email requerido');
+            }
+            
+            // Validar formato del email y existencia
+            $alerts = User::validateEmail($email);
+            if (!empty($alerts['error'])) {
+                return $this->response(422, 'Errores de validación', ['errors' => $alerts['error']]);
+            }
+            
+            // // Buscar usuario por email 
+            $user = User::where('email', $email);
+            // crear un nuevo token y guardamos en la base de datos
+            $user->createToken();
+            $user->save();
+
+            // Enviar email con instrucciones
+            $email = new Email($user->email, $user->name, $user->token);
+            $result = $email->sendPasswordResetEmail();
+            
+            // Si no se pudo enviar el email mostramos un error
+            if (!$result) {
+                return $this->response(500, 'Error al enviar el correo electrónico');
+            }
+
+            return $this->response(200, 'Instrucciones enviadas a tu correo electrónico');
+
+        } catch (\Throwable $e) {
+            // return $this->response(500, 'Error interno del servidor');
+            return $this->response(500, $e->getMessage());
+        }
     }
 
     public function resetPasswordAPI() {

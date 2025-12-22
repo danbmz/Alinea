@@ -3,7 +3,9 @@
         <h2 class="form-title">¿Olvidaste tu contraseña?</h2>
         <p class="form-subtitle">Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
 
-        <form action="/forgot" method="post" class="general-form">
+        <form method="post" class="general-form">
+            <div class="alerts-container"></div>
+
             <div class="form-group">
                 <label for="email" class="form-label">Correo electrónico: </label>
                 <input type="email" id="email" name="email" class="form-input" required>
@@ -18,6 +20,6 @@
 
 <?php 
     $script = "
-        <script src='/build/js/pages/forgot.js'></script>
+        <script type='module' src='/build/js/pages/auth/forgot.js'></script>
     ";
 ?>

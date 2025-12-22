@@ -2,6 +2,8 @@
     <div class="form-container">
         <h2 class="form-title">Iniciar Sesión</h2>
         <form method="POST" action="/login" class="general-form">
+            <div class="alerts-container"></div>
+
             <div class="form-group">
                 <label for="email" class="form-label">Email:</label>
                 <input type="email" id="email" name="email" value="" class="form-input" placeholder="correo@correo.com" required>
