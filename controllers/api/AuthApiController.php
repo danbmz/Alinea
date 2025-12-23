@@ -130,8 +130,68 @@ class AuthApiController {
     }
 
     public function resetPasswordAPI() {
-        // Lógica para restablecer contraseña
-        echo 'Reset Password API';
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $token = $data['token'] ?? '';
+            $newPassword = $data['newPassword'] ?? '';
+            $confirmPassword = $data['confirmPassword'] ?? '';
+            
+
+            if(!$token) {
+                return $this->response(400, 'Token inválido');
+            }
+            
+            // Validar nuevas contraseñas
+            $alerts = User::validatePasswordReset($newPassword, $confirmPassword);
+            if(!empty($alerts['error'])) {
+                return $this->response(422, 'Errores de validación', ['errors' => $alerts['error']]);
+                // debuguear($user);
+            }
+
+            // Buscar usuario por token
+            $user = User::where('token', $token);
+            if(!$user) {
+                return $this->response(404, 'Usuario no encontrado o token inválido');
+            }
+            
+            // Actualizar la contraseña
+            $user->password = $newPassword;
+            $user->hashPassword();
+            $user->token = ""; // Invalidate the token
+            
+            $result = $user->save();
+
+            if($result) {
+                return $this->response(200, 'Contraseña restablecida correctamente');
+            } else {
+                return $this->response(500, 'Error al restablecer la contraseña, intenta de nuevo más tarde');
+            }
+        } catch (\Throwable $e) {
+            return $this->response(500, 'Error del servidor');
+        }
+    }
+
+    // Metodo reutilizable para validar token   
+    public function validateTokenAPI() {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $token = $data['token'] ?? null;
+
+            if(!$token) {
+                return $this->response(400, 'Token inválido');
+            }
+
+            // Buscar usuario por token
+            $user = User::where('token', $token);
+            if(!$user) {
+                return $this->response(404, 'Token inválido o usuario no encontrado');
+            }
+
+            return $this->response(200, 'Token válido');
+
+        } catch (\Throwable $th) {
+            return $this->response(500, 'Error del servidor');
+        }
     }
 
     // Métodos auxiliares para respuestas JSON

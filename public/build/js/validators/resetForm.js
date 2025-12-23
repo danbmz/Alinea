@@ -1,0 +1,1 @@
+export function resetFormValidator(r){var s=[];return r.newPassword&&r.confirmPassword||s.push("La contraseña es requerida."),r.newPassword!==r.confirmPassword&&s.push("Las contraseñas no coinciden."),s}

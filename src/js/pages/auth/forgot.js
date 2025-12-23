@@ -5,6 +5,8 @@ import { showModal } from '../../components/modals.js';
 
 // Seleccionar elementos del DOM
 const form = document.querySelector('.general-form');
+const submmitBtn = document.querySelector('.form-button');
+submmitBtn.disabled = false;
 
 form.addEventListener('submit', async function(event) {
     event.preventDefault(); // Prevent the default form submission
@@ -18,6 +20,7 @@ form.addEventListener('submit', async function(event) {
 
     // If no errors, proceed with the form submission
     if (errors.length === 0) {
+        submmitBtn.disabled = true;
         try {
             const response = await forgotPassword(email);
             if (response.ok) {
@@ -34,7 +37,7 @@ form.addEventListener('submit', async function(event) {
         } catch (error) {
             showModal('Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.', 'error', '/forgot');
             setTimeout(() => {
-                window.location.href = '/forgot';
+                window.location.reload();
             }, 3000)
         }
     }

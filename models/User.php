@@ -81,6 +81,26 @@ class User extends ActiveRecord {
         return self::$alerts;
     }
 
+    public static function validatePasswordReset($newPassword, $confirmPassword) {
+        if (!trim($newPassword) || !trim($confirmPassword)) {
+            self::$alerts['error'][] = 'Ambos campos son obligatorios';
+        } elseif ($newPassword !== $confirmPassword) {
+            self::$alerts['error'][] = 'Las contraseñas no coinciden';
+        } elseif (strlen($newPassword) < 8) {
+            self::$alerts['error'][] = 'La contraseña debe tener al menos 8 caracteres';
+        } elseif (strlen($newPassword) > 60) {
+            self::$alerts['error'][] = 'La contraseña no puede exceder 60 caracteres';
+        } elseif (!preg_match("/[A-Z]/", $newPassword)) {
+            self::$alerts['error'][] = 'La contraseña debe contener al menos una mayúscula';
+        } elseif (!preg_match("/[a-z]/", $newPassword)) {
+            self::$alerts['error'][] = 'La contraseña debe contener al menos una minúscula';
+        } elseif (!preg_match("/[0-9]/", $newPassword)) {
+            self::$alerts['error'][] = 'La contraseña debe contener al menos un número';
+        }
+
+        return self::$alerts;
+    }
+
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
     }

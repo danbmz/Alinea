@@ -1,15 +1,18 @@
-import { verifyAccount } from "../../api/auth.js";
+import { verifyAccount, validateToken } from "../../api/auth.js";
 import { showModal } from "../../components/modals.js";
+
 
 (async () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
+    
+    const responseTkn = await validateToken(token);
 
-    if (!token) {
-        showModal('Token inválido o ausente.', 'error');
+    if (!responseTkn.ok) {
+        showModal(responseTkn.data.message, 'error');
         setTimeout(() => {
             window.location.href = '/';
-        }, 2000)
+        }, 3000);
         return;
     }
 
@@ -27,6 +30,9 @@ import { showModal } from "../../components/modals.js";
             showModal(response.data.message, 'error');
         }
     } catch (error) {
-        showModal(error.message, 'error');
+        showModal('Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.', 'error', '/forgot');
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000)
     }
 })();

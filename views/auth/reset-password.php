@@ -2,7 +2,7 @@
     <div class="form-container">
         <h2 class="form-title">Restablecer Contraseña</h2>
 
-        <form action="/forgot" method="post" class="general-form">
+        <form method="post" class="general-form">
             <div class="alerts-container"></div>
 
             <div class="form-group">
@@ -10,8 +10,8 @@
                 <input type="password" id="password" name="password" class="form-input" placeholder="********" required>
             </div>
             <div class="form-group">
-                <label for="confirm_password" class="form-label">Confirma tu contraseña:</label>
-                <input type="password" id="confirm_password" name="confirm_password" class="form-input" placeholder="********" required>
+                <label for="confirm-password" class="form-label">Confirma tu contraseña:</label>
+                <input type="password" id="confirm-password" name="confirm-password" class="form-input" placeholder="********" required>
             </div>
 
             <div class="form-actions">
@@ -23,6 +23,6 @@
 
 <?php 
     $script = "
-        <script src='/build/js/pages/auth/reset.js'></script>
+        <script type='module' src='/build/js/pages/auth/reset.js'></script>
     ";
 ?>

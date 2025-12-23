@@ -21,6 +21,7 @@ $router->post('/api/register', [ApiControllers\AuthApiController::class, 'regist
 $router->post('/api/forgot', [ApiControllers\AuthApiController::class, 'forgotPasswordAPI']);
 $router->post('/api/reset', [ApiControllers\AuthApiController::class, 'resetPasswordAPI']);
 $router->post('/api/verify-account', [ApiControllers\AuthApiController::class, 'verifyAccountAPI']);
+$router->post('/api/validate-token', [ApiControllers\AuthApiController::class, 'validateTokenAPI']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
