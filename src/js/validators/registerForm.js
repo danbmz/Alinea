@@ -6,8 +6,8 @@ export function validateRegisterForm({ name, email, password, confirmPassword })
         return errors;
     }
 
-    if (password.length < 6) {
-        errors.push('La contraseña debe tener al menos 6 caracteres');
+    if (password.length < 8) {
+        errors.push('La contraseña debe tener al menos 8 caracteres');
     }
 
     if (password !== confirmPassword) {

@@ -26,6 +26,28 @@ class User extends ActiveRecord {
         $this->token = $args['token'] ?? '';
     }
 
+    public static function validateLoginForm($data){
+        // Validar 0 campos vacios y nombre
+        if(!trim($data['email']) || !trim($data['password'])) {
+            self::$alerts['error'][] = 'Todos los campos son obligatorios';
+        } 
+
+        $email = self::where('email', $data['email']);
+
+        // Validar email
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            self::$alerts['error'][] = 'El formato del correo no es válido';
+        } elseif (!$email || !$email->confirmed) {
+            self::$alerts['error'][] = 'Usuario no econtrado o correo no confirmado';
+        }
+
+        return self::$alerts;
+    }
+
+    public function verifyPassword($password) {
+        return password_verify($password, $this->password);
+    }
+
     public function validateInputs() {
 
         // Validar 0 campos vacios y nombre

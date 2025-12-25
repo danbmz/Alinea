@@ -39,7 +39,7 @@ form.addEventListener('submit', async function(event) {
                 }
             }
         } catch (error) {
-            showModal(error.message, 'error');
+            showModal('Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.', 'error', '/');
         }
     }
 });

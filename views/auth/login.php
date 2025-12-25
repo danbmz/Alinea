@@ -1,7 +1,7 @@
 <div class="center-form">
     <div class="form-container">
         <h2 class="form-title">Iniciar Sesión</h2>
-        <form method="POST" action="/login" class="general-form">
+        <form method="POST" class="general-form">
             <div class="alerts-container"></div>
 
             <div class="form-group">
@@ -27,6 +27,6 @@
 
 <?php 
     $script = "
-        <script src='/build/js/pages/login.js'></script>
+        <script type='module' src='/build/js/pages/auth/login.js'></script>
     ";
 ?>

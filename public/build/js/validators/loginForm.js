@@ -1,0 +1,1 @@
+export function validateLoginForm(o){var e=o.email,s=o.password,r=[];return e&&s||r.push("No puedes enviar campos vacios"),/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)||r.push("El correo electrónico no es válido."),r}

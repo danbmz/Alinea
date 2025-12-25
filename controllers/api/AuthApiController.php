@@ -86,8 +86,60 @@ class AuthApiController {
     }
 
     public function loginAPI() {
-        // Lógica para iniciar sesión
-        echo 'Login API';
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+        
+            if(!$data){
+                return $this->response(400, 'No se recibieron los datos enviados.');
+            }
+
+            // Aca se ejecuta y usamos cosas instanciadas dentro de la validacion, pero que pasa si no existe el usuario?
+            $alerts = User::validateLoginForm($data);
+            if(!empty($alerts)){
+                return $this->response(422, 'Errores de validación', ['errors' => $alerts['error']]);
+            }
+
+            // Si no hay errores y el usuario existe
+            $user = User::where('email', $data['email']);
+            $auth = $user->verifyPassword($data['password']);
+            if(!$auth) {
+                return $this->response(422, 'Errores de validación', ['errors'=>['La contraseña es incorrecta.']]);
+            }
+
+            // Si el usuario existe y sus credenciales coinciden, iniciamos un session 
+            session_start();
+            $_SESSION['id'] = $user->id;
+            $_SESSION['name'] = $user->name;
+            $_SESSION['email'] = $user->email;
+            $_SESSION['login'] = true;
+
+            // Indicamos el front que se inicio sesion con exito.
+            return $this->response(200, 'Inicio de sesión exitoso');
+
+        } catch (\Throwable $th) {
+            // return $this->response(500, $th->getMessage());
+            return $this->response(500, 'Error interno del servidor');
+        }
+    }
+
+    public function logoutAPI(){
+        // iniciamos el session para acceder a los datos
+        session_start();
+
+        try {
+            // Vaciamos el session
+            $_SESSION = [];
+            // Destruimos el session
+            session_destroy();
+
+            // Devolvemos una respuesta al Front;
+            return $this->response(200, 'Logout exitoso');
+
+        } catch (\Throwable $th) {
+            return $this->response(500, 'Hubo un problema al intentar cerrar la sesión');
+        }
+
+
     }
 
     public function forgotPasswordAPI() {
@@ -124,8 +176,8 @@ class AuthApiController {
             return $this->response(200, 'Instrucciones enviadas a tu correo electrónico');
 
         } catch (\Throwable $e) {
-            // return $this->response(500, 'Error interno del servidor');
-            return $this->response(500, $e->getMessage());
+            return $this->response(500, 'Error interno del servidor');
+            // return $this->response(500, $e->getMessage());
         }
     }
 
