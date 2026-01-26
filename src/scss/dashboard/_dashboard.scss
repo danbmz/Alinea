@@ -1,0 +1,22 @@
+@use 'base/variables' as *;
+@use 'base/mixins' as m;
+
+.content{
+    display: flex;
+    flex-direction: column;
+    @include m.tablet{
+        flex-direction: row;
+    }
+}
+.main_cont{
+    padding: 3rem;
+    flex: 1;
+    background-color: $grisClaro;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.m_title{
+    text-align: center;
+    font-size: 3rem;
+}

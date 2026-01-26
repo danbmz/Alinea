@@ -1,0 +1,20 @@
+@use 'base/variables' as *;
+@use 'base/mixins' as m;
+
+.m_form-project{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#description {
+    resize: none;
+    height: 120px;
+}
+input[type="color"]{
+    padding: .5rem;
+    width: 60px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+}

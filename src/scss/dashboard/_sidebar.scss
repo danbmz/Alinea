@@ -1,0 +1,45 @@
+@use 'base/variables' as *;
+@use 'base/mixins' as m;
+
+.sidebar{
+    max-width: 270px;
+    height: 100vh;
+    background-color: $grisClaro;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.sidebar_header{
+    display: flex;
+    justify-content: space-between;
+}
+.sb_lg-cont{
+    display: flex;
+    gap: 1rem;
+}
+.sb_head-cont{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.sidebar_main{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.sb_card-title{
+    display: inline-block;
+    font-weight: bold;
+    color: $cyan;
+    margin-bottom: 1rem;
+}
+.sb_card-nav{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.sb_link{
+    padding-left: 1rem;
+    ;
+}

@@ -1,0 +1,1 @@
+import{showAlerts as o}from"../../helpers/alerts.js";import{showModal as r}from"../../components/modals.js";import{validateNewProjectForm as m}from"../../validators/dashboard/newProjectForm.js";import{registerProject as s}from"../../api/dashboardAPI.js";

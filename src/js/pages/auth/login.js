@@ -24,9 +24,8 @@ form.addEventListener('submit', async function(event) {
             const response = await login(dataForm);
             if(response.ok){
                 // Redireccionar a vista de Dashboard
-                console.log('Sesion iniciada');
                 form.reset();
-                window.location.href = '/user/dashboard';
+                window.location.href = 'user/dashboard';
             } else {
                 if(response.status === 422 && response.data.data.errors){
                     showAlerts(response.data.data.errors);
@@ -35,11 +34,10 @@ form.addEventListener('submit', async function(event) {
                 }
             }
         } catch (error) {
-            console.log(error.message)
-            // showModal('Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.', 'error', '/');
-            // setTimeout(() => {
-            //     window.location.href = '/'
-            // }, 3000)
+            showModal('Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.', 'error', '/');
+            setTimeout(() => {
+                window.location.href = '/'
+            }, 3000)
         }
     }
 

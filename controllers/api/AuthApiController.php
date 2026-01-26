@@ -138,8 +138,6 @@ class AuthApiController {
         } catch (\Throwable $th) {
             return $this->response(500, 'Hubo un problema al intentar cerrar la sesión');
         }
-
-
     }
 
     public function forgotPasswordAPI() {
