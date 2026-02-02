@@ -6,7 +6,37 @@ use Model\Project;
 
 class DashboardAPIController {
     public function getProjectsAPI(){
+        try {        
+            // Iniciamos session para acceder al id del usuario
+            session_start();
+            $userId = $_SESSION['id'];
 
+            if (!$userId) {
+                return $this->response(401, 'Usuario no autenticado');
+            }
+
+            // Obtener proyectos del usuario con nuevo metodo que obtiene todos los resultados y no solo 1 como where.
+            $projects = Project::belongsTo('user_id', $userId);
+            // Si no hay proyectos devolvemos un mensaje
+            if(!$projects) {
+                return $this->response(200, 'Aún no tienes proyectos.', ['projects' => []]);
+            }
+            // Si si hay proyectos, los mandamos al Front
+            return $this->response(200, 'Proyectos obtenidos exitosamente.', ['projects' => $projects]);
+
+        } catch (\Throwable $e) {
+            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+            return $this->response(
+                500,
+                'Error interno',
+                [
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine()
+                ]
+            );
+        }
     }
 
     public function createProjectAPI() {
@@ -30,13 +60,14 @@ class DashboardAPIController {
             if (!isset($_SESSION['id'])) {
                 return $this->response(401, 'Usuario no autenticado');
             }
-            // Si existe, asignamos el ID de usuario y guardamos el proyecto
+            // Si existe
             $project->user_id = $_SESSION['id']; // Asignar el ID del usuario desde la sesión
-            $result = $project->save();
+            $project->url = md5(uniqid()); // Generar una URL unica para identificar el proyecto
+            $result = $project->save(); // Guardamos
 
             // Responder con mensajes de éxito o error
             if($result) {
-                return $this->response(201, 'Tu proyecto fue creado exitosamente.');
+                return $this->response(201, 'Tu proyecto fue creado exitosamente.', ['url' => $project->url]);
             } else {
                 return $this->response(500, 'Error al crear el proyecto.');
             }

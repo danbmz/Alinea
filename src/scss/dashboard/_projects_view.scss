@@ -1,0 +1,51 @@
+@use 'base/variables' as *;
+@use 'base/mixins' as m;
+
+// Estilos para cuando no existen proyectos creados
+.no-projects-message{
+    font-size: 2rem;
+    color: $gris;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+.no-projects-actions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+// Estilos para cuando si extisten proyectos creados
+.projects-list{
+    @include m.grid(1, 2rem);
+    @include m.tablet {
+        @include m.grid(2, 2rem);
+    }
+    @include m.desktop {
+        @include m.grid(3, 2rem);
+    }
+}
+
+.project-item{
+    padding: 1.5rem;
+    border-radius: 12px;
+    color: $blanco;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 2rem;
+    }
+
+    p {
+        margin: 0.5rem 0;
+        font-size: 1.4rem;
+    }
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+}

@@ -17,3 +17,17 @@ export async function registerProject(dataForm) {
         data
     };
 }
+
+export async function getUserProjects() {
+    const URL = '/api/projects';
+
+    const response = await fetch(URL, {method: 'GET'});
+
+    const data = await response.json();
+
+    return {
+        ok: response.ok,
+        status: response.status,
+        data
+    };
+}

@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use MVC\Router;
+use Model\Project;
 
 class DashboardController {
     public static function dashboard(Router $router) {
@@ -36,10 +37,35 @@ class DashboardController {
         isAuth();
 
         // Si esta logeado, mostramos la vista
-        $router->render('dashboard/new_project', [
+        $router->render('dashboard/newProject', [
             'name' => $_SESSION['name'],
             'title' => 'Crear Proyecto'
         ]);
     } 
-    
+    public static function showProject(Router $router) {
+        // Iniciamos el session para tener acceso a sus datos
+        session_start();
+        // verificamos que haya iniciado sesion
+        isAuth();
+
+        // validar que exista la URL
+        $url = $_GET['id'];
+        if(!$url){
+            header('Location: /user/projects');
+            return;
+        }
+
+        // Revisamos que exista el proyecto y que pertenezca al usuario autenticado
+        $project = Project::where('url', $url);
+        if (!$project || $project->user_id !== $_SESSION['id']) {
+            header('Location: /user/projects');
+            return;
+        }
+
+        // Si esta logeado, mostramos la vista
+        $router->render('dashboard/projectView', [
+            'name' => $_SESSION['name'],
+            'title' => $project->project_name,
+        ]);
+    } 
 }

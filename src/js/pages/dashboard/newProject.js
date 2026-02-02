@@ -28,7 +28,7 @@ form.addEventListener('submit', async (e) => {
             const response = await registerProject(data);
 
             if (response.ok) {
-                showModal(response.data.message, 'success', '/user/projects', 'Ver proyecto');
+                showModal(response.data.message, 'success', `/user/project?id=${response.data.data.url}`, 'Ver proyecto');
                 form.reset();
             } else {
                 if(response.status === 422 && response.data.data.errors){

@@ -68,6 +68,12 @@ class ActiveRecord {
         return array_shift( $result ) ;
     }
 
+    public static function belongsTo($column, $value) {
+        $query = "SELECT * FROM " . static::$tableName . " WHERE ${column} = '${value}'";
+        $result = self::querySQL($query);
+        return $result;
+    }
+
     // SQL para Consultas Avanzadas.
     public static function SQL($query) {
         $result = self::querySQL($query);

@@ -20,6 +20,7 @@ $router->get('/reset', [Controllers\AuthController::class, 'resetPassword']);
 $router->get('/user/dashboard', [Controllers\DashboardController::class, 'dashboard']);
 $router->get('/user/projects', [Controllers\DashboardController::class, 'projects']);
 $router->get('/user/projects/create', [Controllers\DashboardController::class, 'createProject']);
+$router->get('/user/project', [Controllers\DashboardController::class, 'showProject']);
 
 
 
@@ -34,7 +35,7 @@ $router->post('/api/verify-account', [ApiControllers\AuthApiController::class, '
 $router->post('/api/validate-token', [ApiControllers\AuthApiController::class, 'validateTokenAPI']);
 
 // API - RUTAS DEL DASHBOARD
-$router->post('/api/projects', [ApiControllers\DashboardApiController::class, 'getProjectsAPI']);
+$router->get('/api/projects', [ApiControllers\DashboardApiController::class, 'getProjectsAPI']);
 $router->post('/api/projects/create', [ApiControllers\DashboardAPIController::class, 'createProjectAPI']);
 
 
