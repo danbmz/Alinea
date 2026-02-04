@@ -9,6 +9,8 @@
     }
 }
 .main_cont{
+    overflow-y: auto;
+    height: 100vh;
     padding: 3rem;
     flex: 1;
     background-color: $grisClaro;

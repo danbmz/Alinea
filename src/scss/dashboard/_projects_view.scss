@@ -20,18 +20,15 @@
     @include m.tablet {
         @include m.grid(2, 2rem);
     }
-    @include m.desktop {
-        @include m.grid(3, 2rem);
-    }
 }
 
 .project-item{
-    padding: 1.5rem;
-    border-radius: 12px;
-    color: $blanco;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
     text-decoration: none;
+    cursor: pointer;
+    border-radius: 12px;
+    color: $blanco;
 
     h3 {
         margin-top: 0;
@@ -48,4 +45,66 @@
         transform: translateY(-5px);
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     }
+}
+.project-item-header{
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+    h3{
+        margin-bottom: .8rem;
+    }
+}
+.project-meta{
+    display: flex;
+    gap : 1rem;
+
+    
+}
+.project-status{
+    font-size: 1.3rem;
+    padding: .5rem .8rem;
+    background-color: $green;
+    border-radius: 8px;
+}
+.project-priority{
+    font-size: 1.3rem;
+    padding: .5rem .8rem;
+    border-radius: 8px;
+    &.high{
+        background-color: $red;
+    }
+    &.medium{
+        background-color: $orange;
+    }
+    &.low{
+        background-color: $blue;
+    }
+}
+
+.project-item-body{
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 0 12px 12px;
+}
+.project-deadline p{
+    margin: 0;
+}
+#body-date-span{
+    font-size: 1.2rem;
+    color: $grisOscuro;
+    font-weight: bolder;
+}
+.project-progress{
+    font-size: 1.4rem;
+    box-shadow: inset 0 0px 2px rgba(0, 0, 0, 0.25);
+    background-color: $grisClaro;
+    padding: .5rem .8rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .5rem;
+    color: $grisOscuro;
+}
+#avance{
+    width: 60%;
+    height: 20px;
 }
