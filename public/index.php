@@ -37,6 +37,9 @@ $router->post('/api/validate-token', [ApiControllers\AuthApiController::class, '
 // API - RUTAS DEL DASHBOARD
 $router->get('/api/projects', [ApiControllers\DashboardApiController::class, 'getProjectsAPI']);
 $router->post('/api/projects/create', [ApiControllers\DashboardAPIController::class, 'createProjectAPI']);
+$router->get('/api/tasks', [ApiControllers\DashboardAPIController::class, 'getTasksAPI']);
+$router->post('/api/tasks/create', [ApiControllers\DashboardAPIController::class, 'createTaskAPI']);
+
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

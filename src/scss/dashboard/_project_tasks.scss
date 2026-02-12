@@ -1,0 +1,71 @@
+@use 'base/variables' as *;
+@use 'base/mixins' as m;
+
+.project-desc{
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    justify-content: space-between;
+    p{
+        margin: 0;
+        font-size: 1.7rem;
+        width: 80%;
+    }
+}
+
+// EStilos para las cards de las tareas
+.tasks-list{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.task-card{
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background-color: $blanco;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.task-header{
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.task-header-top{
+    display: flex;
+    gap: 2rem;
+}
+.task-status{
+    font-size: 1.4rem;
+    color: $gris;
+}
+.task-name{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $grisOscuro;
+}
+.task-btn{
+    font-size: 1.5rem;
+    color: $gris;
+    background-color: transparent;
+    border: none;
+}
+.task-details{
+    display: none;
+}
+.task-checkbox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.checkbox{
+    width: 15px;
+  height: 15px;
+  border: 2px solid #6366f1;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}

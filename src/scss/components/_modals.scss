@@ -1,6 +1,7 @@
 @use 'base/variables' as *;
-@use 'base/mixins' as *;
+@use 'base/mixins' as m;
 
+// Estilos para modales de informacion
 .modal-container {
     display: grid;
     place-items: center;
@@ -24,6 +25,51 @@
     box-shadow: 0 4px 6px rgba($negro, 0.2);
     width: min(90%, 500px);
     margin: 0 auto;
+}
+
+// Estilos para modal de nueva tarea
+.modal {
+    padding-top: 6rem;
+    position: fixed;
+    inset: 0;
+    background-color: rgba($negro, 0.5);
+    animation: fadeIn ease-in 0.3s; // Agregamos la animacion o keyframes con la propiedad animation.
+    &.fade-Out {
+        animation: fadeOut ease-in 0.3s;
+    }
+}
+
+.modal-task{
+    position: relative;
+    height: auto;
+    width: min(720px, 95%);
+    margin: 0 auto 28px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+    @include m.desktop {
+        height: auto;
+    }
+    h4{
+        margin-bottom:1rem;
+    }
+}
+.span-modal{
+    margin: 0 0 1rem 0;
+}
+.modal-actions{
+    margin-top: 1.5rem;
+}
+.btn-close-modal{
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 

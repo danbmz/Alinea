@@ -22,3 +22,12 @@ export function showModal(message, type, location = '/', buttonText = 'Cerrar') 
     document.body.appendChild(modalContainer);
     document.body.classList.add('no-scroll');
 }
+
+export function closeModal(){
+    const modal = document.querySelector(".modal");
+    modal.classList.add("fade-Out");
+    setTimeout(() => {
+        modal?.remove(); // ?: verifica si existe el elemento 'modal', y si si existe, lo elimina.
+        document.querySelector("body").classList.remove("no-scroll");
+    }, 300);
+}

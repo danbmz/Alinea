@@ -66,6 +66,7 @@ class DashboardController {
         $router->render('dashboard/projectView', [
             'name' => $_SESSION['name'],
             'title' => $project->project_name,
+            'description' => $project->description
         ]);
     } 
 }

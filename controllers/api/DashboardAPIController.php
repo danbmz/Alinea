@@ -3,6 +3,7 @@
 namespace ApiControllers;
 
 use Model\Project;
+use Model\Task;
 
 class DashboardAPIController {
     public function getProjectsAPI(){
@@ -71,6 +72,94 @@ class DashboardAPIController {
             } else {
                 return $this->response(500, 'Error al crear el proyecto.');
             }
+
+        } catch (\Throwable $e) {
+            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+            return $this->response(
+                500,
+                'Error interno',
+                [
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine()
+                ]
+            );
+        }
+    }
+
+    public function createTaskAPI() {
+        try{
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                return $this->response(400, 'Datos inválidos');
+            }
+
+            // Consultamos el proyecto para asegurarnos que exista y que el usuario tenga permiso para agregar tareas
+            $project = Project::where('url', $data['project_id']);
+            session_start();
+            if (!$project || $project->user_id !== $_SESSION['id']) {
+                return $this->response(403, 'No tienes permiso para agregar tareas a este proyecto.');
+            }
+
+            // Validación básica del formulario
+            $task = new Task($data);
+            $alerts = $task->validateNewTask();
+
+            if (!empty($alerts['error'])) {
+                return $this->response(422, 'Errores de validación', ['errors' => $alerts['error']]);
+            }
+
+            // Si no hay errores, asignamos el ID del proyecto a la tarea y la guardamos
+            $task->project_id = $project->id;
+            $result = $task->save();
+
+            if($result) {
+                return $this->response(201, 'Tarea creada exitosamente.', ['task' => $task]);
+            } else {
+                return $this->response(500, 'Error al crear nueva tarea.');
+            }
+
+        } catch (\Throwable $e){
+            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+            return $this->response(
+                500,
+                'Error interno',
+                [
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine()
+                ]
+            );
+        }
+    }
+
+    public function getTasksAPI() {
+        try {        
+            // Iniciamos session para acceder al id del usuario
+            session_start();
+            $userId = $_SESSION['id'];
+
+            if (!$userId) {
+                return $this->response(401, 'Usuario no autenticado');
+            }
+
+            // Obtener el proyecto que contiene las tareas y Verificamos que hemos obtenido el resultado correctamente
+            $project = Project::where('user_id', $userId);
+            if(!$project) {
+                return $this->response(401, 'Este proyecto no fue encontrado');
+            }
+
+            // Obtener tareas del usuario con nuevo metodo que obtiene todos los resultados y no solo 1 como where.
+            $tasks = Task::belongsTo('project_id', $project->id);
+            if(!$tasks) {
+                return $this->response(200, 'Aún no tienes tareas.', ['tasks' => []]);
+            }
+
+            // Si si hay tareas, los mandamos al Front
+            return $this->response(200, 'Tareas obtenidas exitosamente.', ['tasks' => $tasks]);
 
         } catch (\Throwable $e) {
             // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');

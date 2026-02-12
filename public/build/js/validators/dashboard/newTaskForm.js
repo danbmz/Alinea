@@ -1,0 +1,1 @@
+export function validateTaskForm(e){var a=e.task_name,t=e.description,r=[];return a.trim()&&t.trim()||r.push("Llena los campos antes de crear una tarea."),task.length>60&&r.push("El titulo de la tarea no debe ser tan largo."),t.length>1e3&&r.push("Tu descripcion excede el limite de caracteres de 1000."),r}
