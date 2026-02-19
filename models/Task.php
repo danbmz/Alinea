@@ -28,6 +28,9 @@ class Task extends ActiveRecord {
         if(!trim($this->task_name)) {
             self::$alerts['error'][] = 'El nombre de la tarea es obligatorio';
         }
+        if(!trim($this->description)) {
+            self::$alerts['error'][] = 'Debes agregar una descripción';
+        }
 
         if(strlen($this->description) < 1 || strlen($this->description) > 1000) {
             self::$alerts['error'][] = 'Usa una descripción concisa para tu tarea';

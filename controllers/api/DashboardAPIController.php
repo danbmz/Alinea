@@ -116,7 +116,7 @@ class DashboardAPIController {
             $result = $task->save();
 
             if($result) {
-                return $this->response(201, 'Tarea creada exitosamente.', ['task' => $task]);
+                return $this->response(201, 'Tarea creada exitosamente.', ['task' => [$task]]);
             } else {
                 return $this->response(500, 'Error al crear nueva tarea.');
             }
@@ -138,7 +138,13 @@ class DashboardAPIController {
 
     public function getTasksAPI() {
         try {        
-            // Iniciamos session para acceder al id del usuario
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                return $this->response(400, 'Datos inválidos');
+            }
+
+            // Verificamos que se este autenticado
             session_start();
             $userId = $_SESSION['id'];
 
@@ -147,11 +153,11 @@ class DashboardAPIController {
             }
 
             // Obtener el proyecto que contiene las tareas y Verificamos que hemos obtenido el resultado correctamente
-            $project = Project::where('user_id', $userId);
+            $project = Project::where('url', $data);
             if(!$project) {
                 return $this->response(401, 'Este proyecto no fue encontrado');
             }
-
+            
             // Obtener tareas del usuario con nuevo metodo que obtiene todos los resultados y no solo 1 como where.
             $tasks = Task::belongsTo('project_id', $project->id);
             if(!$tasks) {
@@ -161,6 +167,52 @@ class DashboardAPIController {
             // Si si hay tareas, los mandamos al Front
             return $this->response(200, 'Tareas obtenidas exitosamente.', ['tasks' => $tasks]);
 
+        } catch (\Throwable $e) {
+            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+            return $this->response(
+                500,
+                'Error interno',
+                [
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine()
+                ]
+            );
+        }
+    }
+
+    public function updateTaskAPI() {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                return $this->response(400, 'Datos inválidos');
+            }
+
+            // Verificamos que se este autenticado
+            session_start();
+            $userId = $_SESSION['id'];
+
+            if (!$userId) {
+                return $this->response(401, 'Usuario no autenticado');
+            }
+
+            // Buscar la tarea correspondiente al ID recibido
+            $task = Task::find($data['id']);
+            if(!$task) {
+                return $this->response(401, 'Error al intentar actualizar el nombre');
+            }
+            
+            // Actualizar el name de la tarea
+            $task->task_name = $data['newValue'];
+            $result = $task->save();
+
+            if($result){
+                return $this->response(200, 'El nombre de la tarea se actualizo correctamente.');
+            } else {
+                return $this->response(401, 'Error al intentar actualizar el nombre.');
+            }
         } catch (\Throwable $e) {
             // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
             return $this->response(

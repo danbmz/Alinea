@@ -1,4 +1,4 @@
-export function showModal(message, type, location = '/', buttonText = 'Cerrar') {
+export function showModal(message, type, location, buttonText = 'Cerrar') {
     const modalContainer = document.createElement('div');
     modalContainer.classList.add('modal-container');
 
@@ -13,7 +13,11 @@ export function showModal(message, type, location = '/', buttonText = 'Cerrar') 
     closeButton.addEventListener('click', () => {
         document.body.removeChild(modalContainer);
         document.body.classList.remove('no-scroll');
-        window.location.href = location;
+        if(location) {
+            window.location.href = location;
+        } else {
+            window.location.reload();
+        }
     });
 
     modalContent.appendChild(messagePara);

@@ -95,6 +95,10 @@ class ActiveRecord {
         // result de la consulta
         $result = self::$db->query($query);
 
+        if ($result) {
+            $this->id = self::$db->insert_id; // AQUÍ
+        }
+
         return [
            'result' =>  $result,
            'id' => self::$db->insert_id

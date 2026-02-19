@@ -2,18 +2,21 @@ import { showAlerts } from '../../helpers/alerts.js';
 import { showModal } from '../../components/modals.js';
 import { validateTaskForm } from '../../validators/dashboard/newTaskForm.js';
 import { closeModal } from '../../components/modals.js';
-import { getTasks } from '../../api/dashboardAPI.js';
+import { getTasks, updateTask } from '../../api/dashboardAPI.js';
 import { registerTask } from '../../api/dashboardAPI.js';
 
-((()=>{
+(( async ()=>{
     // Contenedor de las tareas
     const taskContainer = document.querySelector('.tasks-list');
+    // Recuperar la id del proyecto mediante la url
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get("id");
 
     // Funcion para renderizar tareas en la primera carga
     async function chargeTasks(){
         try {
-            const response = await getTasks();
-            if(response.data.data.tasks === 0){
+            const response = await getTasks(url);
+            if(response.data.data.tasks.length === 0){
                 taskContainer.innerHTML = `
                     <div class="no-projects-message">Aún no tienes Tareas creadas. Crea uno ahora para comenzar a trabajar.</div>
                     `;
@@ -86,15 +89,11 @@ import { registerTask } from '../../api/dashboardAPI.js';
         const formTask = document.querySelector('.general-form');
         formTask.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            // Recuperar la id del proyecto mediante la url
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get("id");
-
+            
             const dataForm = {
                 task_name: formTask.task.value,
                 description: formTask.description.value,
-                project_id: id
+                project_id: url
             }
 
             const erros = validateTaskForm(dataForm);
@@ -111,7 +110,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
                         if(response.status === 422 && response.data.data.errors){
                             showAlerts(response.data.data.errors);
                         } else {
-                            showModal(response.data.message || 'Error inesperado', 'error', `/user/project?id=${id}`);
+                            showModal(response.data.message || 'Error inesperado', 'error', `/user/project?id=${url}`);
                         }
                     }
                 } catch (error) {
@@ -125,28 +124,114 @@ import { registerTask } from '../../api/dashboardAPI.js';
     }
 
     // Funcion para renderizar las cards de tareas
-    function renderTasks(response){
-        const card = document.createElement("DIV");
-        card.classList.add('task-card');
-        const cardContent = `
-            <div class="task-header"> 
-                <div class="task-header-top">
-                    <span class="task-status">${response.task_status}</span>
-                    <label for="task_${response.task_name}" class="task-name">${response.task_name}</label>
-                </div>
-                <button class="task-btn"> > </button>
-                <p class="task-details">${response.description}</p>
-            </div>
-            <div class="task-checkbox">
-                <input type="checkbox" id="task_${response.task_name}" class="checkbox"/>
-            </div>
-        `;
-        card.innerHTML = cardContent;
+    function renderTasks(data){
+        // Verificamos que existe el mensaje, y si existe lo eliminamos.
+        const message = document.querySelector(".no-projects-message");
+        if(message){
+            message.remove();
+        }
 
-        // Aqui agregamos las tareas al contenedor
-        taskContainer.appendChild(card);
+        data.forEach(task => {
+            const card = document.createElement("DIV");
+            card.classList.add('task-card');
+            const cardContent = `
+                <div class="task-header"> 
+                    <div class="task-header-top">
+                        <span class="task-status">${task.task_status}</span>
+                        <span data-id="${task.id}" class="task-name">${task.task_name}</span>
+                    </div>
+                    <button class="task-btn"> > </button>
+                    <p class="task-details">${task.description}</p>
+                </div>
+                <div class="task-checkbox">
+                    <input type="checkbox" data-id="${task.id}" class="checkbox"/>
+                </div>
+            `;
+            card.innerHTML = cardContent;
+    
+            // Aqui agregamos las tareas al contenedor
+            taskContainer.appendChild(card);
+        });
     }
 
+    // Funcion para editar titulo de tarea
+    document.addEventListener('dblclick', (e) => {
+        if (!e.target.classList.contains("task-name")) return;
+
+        const span = e.target;
+        const currentText = span.textContent;
+        const id = span.dataset.id;
+
+        // Crear input
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = currentText;
+        input.classList.add("edit-input");
+
+        // Reemplazar span por input
+        span.replaceWith(input);
+
+        // Enfocar automáticamente
+        input.focus();
+        input.select();
+
+        // 🔹 Función para restaurar span   
+        const restoreSpan = (newValue = currentText) => {
+            const newSpan = document.createElement("span");
+            newSpan.classList.add("task-name");
+            newSpan.dataset.id = id;
+            newSpan.textContent = newValue;
+            input.replaceWith(newSpan);
+        };
+
+        // Util para evitar conflicto entre enter, escape y blur
+        let isSaving = false;
+
+        // ✅ Guardar cambios
+        const saveChanges = async () => {
+            const data = {
+                newValue: document.querySelector(".edit-input").value.trim(),
+                id: id
+            };
+
+            if (data.newValue === "") {
+                restoreSpan();
+                return;
+            }
+
+            // enviamos el nuevo valor a la base
+            const response = await updateTask(data);
+
+            if(response.ok){
+                restoreSpan(data.newValue);
+            } else {
+                showModal(response.data.message, 'error')
+            }
+
+        };
+
+        // 🎯 Guardar con Enter
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                isSaving = true;
+                saveChanges();
+            }
+
+            if (e.key === "Escape") {
+                isSaving = true;
+                restoreSpan();
+            }
+        });
+
+        // 💾 Guardar al perder foco
+        input.addEventListener("blur", () => {
+            if(isSaving) return;
+            restoreSpan();
+        });
+
+    });
+       
+
     // Llamamos a la funcion que renderiza las tareas
-    chargeTasks();
+    await chargeTasks();
 }))()

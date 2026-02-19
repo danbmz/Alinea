@@ -11,8 +11,18 @@
 </head>
 <body>
     <div>
-        <?php echo $contenido; ?>
+        <div class="content">
+            <!-- Sidebar - es un template -->
+            <?php require_once __DIR__ . '../../dashboard/templates/sidebar.php'; ?>
+            <main class="main_cont">
+                <!-- Template del header -->
+                <?php require_once __DIR__ . '../../dashboard/templates/dash_header.php' ?>
+                <!-- Demas contenido personalizado de cada vista -->
+                <?php echo $contenido; ?>
+            </main>
+        </div>
         <?php echo $script ?? ''; ?>
+        <script type='module' src='/build/js/pages/dashboard/dashboardLayout.js'></script>
     </div>
 </body>
 </html>

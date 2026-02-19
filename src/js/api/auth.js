@@ -1,5 +1,3 @@
-import { showModal } from '../../js/components/modals.js'
-
 export async function registerUser(dataForm) {
     const URL = '/api/register';
 
@@ -105,23 +103,19 @@ export async function login(dataForm) {
 export async function logout() {
     const URL = '/api/logout';
 
-    try {
-        const response = await fetch(URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            window.location.href = '/login';
-        } else {
-            showModal(data.message || 'Hubo un problema al intentar cerrar tu sesión', 'error', '/dashboard')
+    const response = await fetch(URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         }
-    } catch (error) {
-        showModal('Estamos presentando problemas, por favor intentelo mas tarde.', 'error', '/dashboard')
+    });
+
+    const data = await response.json();
+
+    return {
+        ok: response.ok,
+        status: response.status,
+        data
     }
 }
 

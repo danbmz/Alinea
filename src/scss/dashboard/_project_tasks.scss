@@ -37,6 +37,7 @@
 }
 .task-header-top{
     display: flex;
+    align-items: center;
     gap: 2rem;
 }
 .task-status{
@@ -68,4 +69,13 @@
   border: 2px solid #6366f1;
   border-radius: 6px;
   transition: all 0.2s ease;
+}
+.edit-input{
+    color: $gris;
+    border: 0.5px solid $grisOscuro;
+    border-radius: 2px;
+    padding: 3px;
+}
+.edit-input:focus-within{
+    outline-color: $morado;
 }

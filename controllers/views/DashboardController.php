@@ -16,7 +16,7 @@ class DashboardController {
         $router->render('dashboard/index', [
             'name' => $_SESSION['name'],
             'title' => 'Dashboard'
-        ]);
+        ], 'dashboard');
     } 
     public static function projects(Router $router) {
         // Iniciamos el session para tener acceso a sus datos
@@ -28,7 +28,7 @@ class DashboardController {
         $router->render('dashboard/projects', [
             'name' => $_SESSION['name'],
             'title' => 'Proyectos'
-        ]);
+        ], 'dashboard');
     } 
     public static function createProject(Router $router) {
         // Iniciamos el session para tener acceso a sus datos
@@ -40,7 +40,7 @@ class DashboardController {
         $router->render('dashboard/newProject', [
             'name' => $_SESSION['name'],
             'title' => 'Crear Proyecto'
-        ]);
+        ], 'dashboard');
     } 
     public static function showProject(Router $router) {
         // Iniciamos el session para tener acceso a sus datos
@@ -63,10 +63,10 @@ class DashboardController {
         }
 
         // Si esta logeado, mostramos la vista
-        $router->render('dashboard/projectView', [
+        $router->render('dashboard/projectTasks', [
             'name' => $_SESSION['name'],
             'title' => $project->project_name,
             'description' => $project->description
-        ]);
+        ], 'dashboard');
     } 
 }

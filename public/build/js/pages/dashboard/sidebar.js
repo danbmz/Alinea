@@ -1,0 +1,1 @@
+import{logout as o}from"../../api/auth";var t=document.querySelector(".sb_btn-logout");t&&t.addEventListener("click",function(){console.log(t)});
