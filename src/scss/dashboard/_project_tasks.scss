@@ -30,7 +30,6 @@
 }
 
 .task-header{
-    width: 90%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -51,6 +50,7 @@
 }
 .task-btn{
     font-size: 1.5rem;
+    cursor: pointer;
     color: $gris;
     background-color: transparent;
     border: none;
@@ -60,7 +60,7 @@
 }
 .task-checkbox{
     display: flex;
-    justify-content: center;
+    gap: 1rem;
     align-items: center;
 }
 .checkbox{
@@ -71,6 +71,7 @@
   transition: all 0.2s ease;
 }
 .edit-input{
+    font-size: 1.4rem;
     color: $gris;
     border: 0.5px solid $grisOscuro;
     border-radius: 2px;
@@ -78,4 +79,7 @@
 }
 .edit-input:focus-within{
     outline-color: $morado;
+}
+.task-delete{
+    cursor: pointer;
 }

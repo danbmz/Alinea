@@ -2,7 +2,7 @@ import { showAlerts } from '../../helpers/alerts.js';
 import { showModal } from '../../components/modals.js';
 import { validateTaskForm } from '../../validators/dashboard/newTaskForm.js';
 import { closeModal } from '../../components/modals.js';
-import { getTasks, updateTask } from '../../api/dashboardAPI.js';
+import { deleteTask, getTasks, updateTask } from '../../api/dashboardAPI.js';
 import { registerTask } from '../../api/dashboardAPI.js';
 
 (( async ()=>{
@@ -134,17 +134,19 @@ import { registerTask } from '../../api/dashboardAPI.js';
         data.forEach(task => {
             const card = document.createElement("DIV");
             card.classList.add('task-card');
+            card.dataset.id = task.id;
             const cardContent = `
                 <div class="task-header"> 
                     <div class="task-header-top">
                         <span class="task-status">${task.task_status}</span>
-                        <span data-id="${task.id}" class="task-name">${task.task_name}</span>
+                        <span class="task-name">${task.task_name}</span>
                     </div>
-                    <button class="task-btn"> > </button>
                     <p class="task-details">${task.description}</p>
                 </div>
                 <div class="task-checkbox">
+                    <button class="task-btn" title="Ver descripción"> > </button>
                     <input type="checkbox" data-id="${task.id}" class="checkbox"/>
+                    <span class="task-delete" title="Eliminar">D</span>
                 </div>
             `;
             card.innerHTML = cardContent;
@@ -154,7 +156,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
         });
     }
 
-    // Funcion para editar titulo de tarea
+    // Funcion para editar nombre de tarea
     document.addEventListener('dblclick', (e) => {
         if (!e.target.classList.contains("task-name")) return;
 
@@ -223,7 +225,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
             }
         });
 
-        // 💾 Guardar al perder foco
+        // 💾 No guardar al perder foco
         input.addEventListener("blur", () => {
             if(isSaving) return;
             restoreSpan();
@@ -231,6 +233,34 @@ import { registerTask } from '../../api/dashboardAPI.js';
 
     });
        
+    // Funcion para eliminar tareas
+    document.addEventListener('click',async (e) => {
+
+        if(!e.target.classList.contains('task-delete')) return;
+
+        // Ocupamos un nuevo modal para confirmar acciones que quiera realizar el usuario
+        const card = e.target.closest('.task-card');
+        const id = card.dataset.id;
+
+        // Hacer peticion 
+        try {
+            const response = await deleteTask(id);
+            if(response.ok){
+                card.classList.add('fadeOut');
+                setTimeout(()=> {
+                    card.remove();
+                }, 1000)
+            } else {
+                showModal(response.data.message, 'error')
+            }
+        } catch (error) {
+            showModal('Error interno', 'error')
+        }
+
+        // Si la respuesta es buena, procedemos a borrar
+
+        
+    })
 
     // Llamamos a la funcion que renderiza las tareas
     await chargeTasks();

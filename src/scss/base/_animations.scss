@@ -1,0 +1,14 @@
+@use 'variables' as *;
+
+.fadeOut{
+    animation: fadeOut ease-in 1s;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

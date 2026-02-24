@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../includes/app.php';
 
+use ApiControllers\AuthApiController;
 use Controllers\DashboardController;
 use MVC\Router;
 $router = new Router();
@@ -41,6 +42,8 @@ $router->post('/api/tasks', [ApiControllers\DashboardAPIController::class, 'getT
 $router->post('/api/tasks/create', [ApiControllers\DashboardAPIController::class, 'createTaskAPI']);
 $router->post('/api/tasks/update', [ApiControllers\DashboardAPIController::class, 'updateTaskAPI']);
 
+
+$router->delete('/api/tasks/{id}', [ApiControllers\DashboardAPIController::class, 'deleteTaskAPI']);
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

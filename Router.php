@@ -4,41 +4,81 @@ namespace MVC;
 
 class Router
 {
-    public array $getRoutes = [];
-    public array $postRoutes = [];
+    public array $routes = [];
 
     public function get($url, $fn){
-        $this->getRoutes[$url] = $fn;
+        $this->routes['GET'][$url] = $fn;
     }
 
     public function post($url, $fn) {
-        $this->postRoutes[$url] = $fn;
+        $this->routes['POST'][$url] = $fn;
+    }
+
+    public function put($url, $fn) {
+        $this->routes['PUT'][$url] = $fn;
+    }
+
+    public function delete($url, $fn) {
+        $this->routes['DELETE'][$url] = $fn;
     }
 
     public function comprobarRutas() {
 
         $currentUrl = $_SERVER['PATH_INFO'] ?? '/';
-        $method = $_SERVER['REQUEST_METHOD'];
+        $httpMethod = $_SERVER['REQUEST_METHOD'];
 
-        if ($method === 'GET') {
-            $fn = $this->getRoutes[$currentUrl] ?? null;
-        } else {
-            $fn = $this->postRoutes[$currentUrl] ?? null;
+        if (!isset($this->routes[$httpMethod])) {
+            http_response_code(405);
+            echo "Método no permitido";
+            return;
         }
 
+        foreach ($this->routes[$httpMethod] as $route => $fn) {
 
-        if ( $fn ) {
-            [$controller, $method] = $fn;
+            // Convertir {id} en expresión regular
+            $routePattern = preg_replace('#\{[a-zA-Z_]+\}#', '([^/]+)', $route);
+            $routePattern = "#^" . $routePattern . "$#";
 
-            if (is_string($controller)) {
-                $controller = new $controller;
+            if (preg_match($routePattern, $currentUrl, $matches)) {
+
+                array_shift($matches); // quitar coincidencia completa
+
+                [$controller, $controllerMethod] = $fn;
+
+                if (is_string($controller)) {
+                    $controller = new $controller;
+                }
+
+                call_user_func_array([$controller, $controllerMethod], array_merge([$this], $matches));
+
+                return;
             }
-
-            call_user_func([$controller, $method], $this);
-        } else {
-            echo "Página No Encontrada o Ruta no válida";
         }
+
+        http_response_code(404);
+        echo "Página No Encontrada o Ruta no válida";
     }
+
+
+    // public function comprobarRutas() {
+
+    //     $currentUrl = $_SERVER['PATH_INFO'] ?? '/';
+    //     $method = $_SERVER['REQUEST_METHOD'];
+
+    //     $fn = $this->routes[$method][$currentUrl] ?? null;
+
+    //     if ( $fn ) {
+    //         [$controller, $method] = $fn;
+
+    //         if (is_string($controller)) {
+    //             $controller = new $controller;
+    //         }
+
+    //         call_user_func([$controller, $method], $this);
+    //     } else {
+    //         echo "Página No Encontrada o Ruta no válida";
+    //     }
+    // }
 
     public function render($view, $datos = [], $layout = 'public'){
 

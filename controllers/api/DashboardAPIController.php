@@ -228,6 +228,39 @@ class DashboardAPIController {
         }
     }
 
+    public function deleteTaskAPI($route, $id){
+        try {
+            // VALIDACIONES - numerico, existe, permisos
+            if (!is_numeric($id)) {
+                return response(400, 'ID inválido');
+            }
+
+            $task = Task::find($id);
+            if (!$task) {
+                return response(404, 'Tarea no encontrada');
+            }
+
+            $project = Project::find($task->project_id);
+            session_start();
+
+            if ($project->user_id !== $_SESSION['id']) {
+                return response(403, 'No autorizado');
+            }
+
+            // ELIMINAR TAREA DE MANERA SOFT O HARD
+            $result = $task->delete();
+            if(!$result){
+                return $this->response(400, 'Hubo un error al intentar eliminar la tarea');
+            } 
+
+            return $this->response(200, 'Tarea eliminada con exito');
+
+
+        } catch (\Throwable $e) {
+            return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+        }
+    }
+
     // Métodos auxiliares para respuestas JSON
     protected function response(int $code, string $message, array $data = []) {
         http_response_code($code);

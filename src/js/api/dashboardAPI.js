@@ -91,3 +91,19 @@ export async function updateTask(dataForm){
         data
     };
 }
+
+export async function deleteTask(id){
+    const URL = `/api/tasks/${id}`;
+
+    const response = await fetch(URL, {
+        method: 'DELETE',
+    });
+
+    const data = await response.json();
+
+    return {
+        ok: response.ok,
+        status: response.status,
+        data
+    };
+}
