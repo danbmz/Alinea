@@ -14,3 +14,9 @@ export function showAlerts(errors) {
         }, 3000);
     });
 }
+
+export function showMessage(container, message){
+    container.innerHTML = `
+    <div class="no-projects-message">${message}</div>
+    `;
+}

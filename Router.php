@@ -14,6 +14,12 @@ class Router
         $this->routes['POST'][$url] = $fn;
     }
 
+    // Mejor opcion para cuando queremos actualizar solo algunos campos
+    public function patch($url, $fn) {
+        $this->routes['PATCH'][$url] = $fn;
+    }
+
+    // Util para cuando queremos reemplazar todo un registro
     public function put($url, $fn) {
         $this->routes['PUT'][$url] = $fn;
     }

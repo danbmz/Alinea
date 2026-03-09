@@ -8,8 +8,14 @@
             &#43; Nueva Tarea
         </button>
     </div>
+
+    <section class="tasks-list" id="tasks-list"></section>
+    <section class="completed-task-list">
+        <h3>Tareas completadas</h3>
+        <div class="completed-section"></div>
+    </section>
+
 </div>
-<div class="tasks-list" id="tasks-list"></div>
 
 <?php
     $script = "

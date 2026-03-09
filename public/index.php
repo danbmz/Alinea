@@ -40,10 +40,12 @@ $router->get('/api/projects', [ApiControllers\DashboardApiController::class, 'ge
 $router->post('/api/projects/create', [ApiControllers\DashboardAPIController::class, 'createProjectAPI']);
 $router->post('/api/tasks', [ApiControllers\DashboardAPIController::class, 'getTasksAPI']);
 $router->post('/api/tasks/create', [ApiControllers\DashboardAPIController::class, 'createTaskAPI']);
-$router->post('/api/tasks/update', [ApiControllers\DashboardAPIController::class, 'updateTaskAPI']);
 
-
+// Un solo endpoint para actualizar registro de tareas
+$router->patch('/api/tasks/{id}', [ApiControllers\DashboardAPIController::class, 'updateTaskAPI']);
 $router->delete('/api/tasks/{id}', [ApiControllers\DashboardAPIController::class, 'deleteTaskAPI']);
+
+
 
 
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador

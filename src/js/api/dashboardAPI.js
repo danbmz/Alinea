@@ -73,14 +73,15 @@ export async function registerTask(dataForm){
 }
 
 export async function updateTask(dataForm){
-    const URL = 'http://localhost:3000/api/tasks/update';
+    
+    const {task_name, id} = dataForm;
 
-    const response = await fetch(URL, {
-        method: 'POST',
+    const response = await fetch(`/api/tasks/${id}`, {
+        method: 'PATCH',
         headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify(dataForm)
+        body: JSON.stringify({task_name})
     });
 
     const data = await response.json();
@@ -98,6 +99,27 @@ export async function deleteTask(id){
     const response = await fetch(URL, {
         method: 'DELETE',
     });
+
+    const data = await response.json();
+
+    return {
+        ok: response.ok,
+        status: response.status,
+        data
+    };
+}
+
+export async function checkTask(id, isChecked){
+    
+    const response = await fetch(`/api/tasks/${id}`,{
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            completed : isChecked
+        })
+    })
 
     const data = await response.json();
 

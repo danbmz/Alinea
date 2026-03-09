@@ -4,12 +4,13 @@ export function validateTaskForm(dataForm) {
 
     if(!task_name.trim() || !description.trim()){
         alerts.push('Llena los campos antes de crear una tarea.')
+        return alerts;
     }
-    if(task.length > 60){
-        alerts.push('El titulo de la tarea no debe ser tan largo.')
+    if(task_name.trim().length > 70){
+        alerts.push('El título de la tarea no debe ser tan largo.')
     }
-    if(description.length > 1000) {
-        alerts.push('Tu descripcion excede el limite de caracteres de 1000.')
+    if(description.trim().length < 10 || description.trim().length > 1000) {
+        alerts.push('Tu descripcion o es muy corta o muy larga.')
     }
 
     return alerts;

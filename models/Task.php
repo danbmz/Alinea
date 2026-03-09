@@ -6,7 +6,7 @@ use Model\ActiveRecord;
 
 class Task extends ActiveRecord {
     protected static $tableName = 'tasks';
-    protected static $dbColumns = ['id', 'task_name', 'description', 'project_id', 'task_status', 'created_at'];
+    protected static $dbColumns = ['id', 'task_name', 'description', 'project_id', 'task_status', 'created_at', 'completed', 'completed_at'];
 
     public $id;
     public $task_name;
@@ -14,6 +14,8 @@ class Task extends ActiveRecord {
     public $project_id;
     public $task_status;
     public $created_at;
+    public $completed;
+    public $completed_at;
 
     public function __construct($args = []){
         $this->id = $args['id'] ?? null;
@@ -22,6 +24,8 @@ class Task extends ActiveRecord {
         $this->project_id = $args['project_id'] ?? null;
         $this->task_status = $args['task_status'] ?? 'Pendiente';
         $this->created_at = $args['created_at'] ?? date('Y-m-d');
+        $this->completed = $args['completed'] ?? 0;
+        $this->completed_at = $args['completed_at'] ?? null;
     }
 
     public function validateNewTask(){

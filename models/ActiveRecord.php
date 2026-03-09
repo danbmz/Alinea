@@ -82,49 +82,70 @@ class ActiveRecord {
 
     // crea un nuevo registro
     public function create() {
-        // Sanitizar los datos
+
         $properties = $this->cleanProperties();
 
-        // Insertar en la base de datos
-        $query = " INSERT INTO " . static::$tableName . " ( ";
-        $query .= join(', ', array_keys($properties));
-        $query .= " ) VALUES (' "; 
-        $query .= join("', '", array_values($properties));
-        $query .= " ') ";
+        // Convertir valores NULL correctamente
+        $values = array_map(function($value) {
+            if ($value === null) {
+                return "NULL";
+            }
+            return "'" . $value . "'";
+        }, array_values($properties));
 
-        // result de la consulta
+        $query = "INSERT INTO " . static::$tableName . " (";
+        $query .= join(', ', array_keys($properties));
+        $query .= ") VALUES (";
+        $query .= join(', ', $values);
+        $query .= ")";
+
         $result = self::$db->query($query);
 
         if ($result) {
-            $this->id = self::$db->insert_id; // AQUÍ
+            $this->id = self::$db->insert_id;
         }
 
         return [
-           'result' =>  $result,
-           'id' => self::$db->insert_id
+            'result' => $result,
+            'id' => self::$db->insert_id
         ];
     }
 
-    public function update() {
-        // Sanitizar los datos
-        $properties = $this->cleanProperties();
+    // Nueva y mejorada funcion de actualizacion
+    public function update($fields = []) {
 
-        // Iterar para ir agregando cada campo de la BD
+        $properties = $this->cleanProperties();
         $values = [];
-        foreach($properties as $key => $value) {
-            $values[] = "{$key}='{$value}'";
+
+        // Si se especifican campos, solo usar esos
+        if (!empty($fields)) {
+            $properties = array_intersect_key($properties, array_flip($fields));
         }
 
-        $query = "UPDATE " . static::$tableName ." SET ";
-        $query .=  join(', ', $values );
-        $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
-        $query .= " LIMIT 1 "; 
+        foreach($properties as $key => $value) {
 
-        // debuguear($query);
+            if (is_null($value)) {
+                $values[] = "{$key}=NULL";
+            } else {
+                $escaped = self::$db->escape_string($value);
+                $values[] = "{$key}='{$escaped}'";
+            }
 
-        $result = self::$db->query($query);
-        return $result;
+        }
+
+        if (empty($values)) {
+            return false; // Nada que actualizar
+        }
+
+        $id = self::$db->escape_string($this->id);
+
+        $query = "UPDATE " . static::$tableName . " SET ";
+        $query .= join(', ', $values);
+        $query .= " WHERE id = '{$id}' LIMIT 1";
+
+        return self::$db->query($query);
     }
+
 
     // Eliminar un registro - Toma el ID de Active Record
     public function delete() {
@@ -178,9 +199,15 @@ class ActiveRecord {
     public function cleanProperties() {
         $properties = $this->properties();
         $sanitizedData = [];
+        
         foreach($properties as $key => $value ) {
-            $sanitizedData[$key] = self::$db->escape_string($value);
+            if (is_null($value)) {
+                $sanitizedData[$key] = null;
+            } else {
+                $sanitizedData[$key] = self::$db->escape_string($value);
+            }
         }
+
         return $sanitizedData;
     }
 

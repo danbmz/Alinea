@@ -182,36 +182,70 @@ class DashboardAPIController {
         }
     }
 
-    public function updateTaskAPI() {
+    public function updateTaskAPI($route, $id) {
         try {
+            // Verificamos que este autenticado
+            session_start();
+            if (!$_SESSION['login']) {
+                return $this->response(401, 'Usuario no autenticado');
+            }
+
+            // VALIDACIONES del ID - numerico, existe, permisos
+            if (!is_numeric($id)) {
+                return response(400, 'ID inválido');
+            }
+
+            $task = Task::find($id);
+            if (!$task) {
+                return response(404, 'Tarea no encontrada');
+            }
+
+            $project = Project::find($task->project_id);
+            if ($project->user_id !== $_SESSION['id']) {
+                return response(403, 'No autorizado');
+            }
+
+            // Verificamos que recibimos datos mediante el body de la peticion
             $data = json_decode(file_get_contents('php://input'), true);
 
             if (!$data) {
                 return $this->response(400, 'Datos inválidos');
             }
-
-            // Verificamos que se este autenticado
-            session_start();
-            $userId = $_SESSION['id'];
-
-            if (!$userId) {
-                return $this->response(401, 'Usuario no autenticado');
-            }
-
-            // Buscar la tarea correspondiente al ID recibido
-            $task = Task::find($data['id']);
-            if(!$task) {
-                return $this->response(401, 'Error al intentar actualizar el nombre');
-            }
             
-            // Actualizar el name de la tarea
-            $task->task_name = $data['newValue'];
-            $result = $task->save();
+           $fieldsToUpdate = [];
+            // ACTUALIZAMOS DEPENDIENDO LO QUE MANDE EL FRONT
+            if(isset($data['task_name'])) {
+                $task->task_name = $data['task_name'];
+                $fieldsToUpdate[] = 'task_name';
+            }
+
+            if(isset($data['completed'])) {
+
+                if($data['completed'] === true){
+                    $task->completed = 1;
+                    $task->completed_at = date('Y-m-d H:i:s');
+                    $task->task_status = 'Completado';
+                } else {
+                    $task->completed = 0;
+                    $task->completed_at = null;
+                    $task->task_status = 'Pendiente';
+                }
+
+                $fieldsToUpdate[] = 'completed';
+                $fieldsToUpdate[] = 'completed_at';
+                $fieldsToUpdate[] = 'task_status';
+            }
+
+            $result = false;
+            // Solo actualiza si hay algo que cambiar
+            if(!empty($fieldsToUpdate)) {
+                $result = $task->update($fieldsToUpdate);
+            }
 
             if($result){
-                return $this->response(200, 'El nombre de la tarea se actualizo correctamente.');
+                return $this->response(200, 'Datos actualizados correctamente.');
             } else {
-                return $this->response(401, 'Error al intentar actualizar el nombre.');
+                return $this->response(401, 'Error al intentar actualizar la tarea.');
             }
         } catch (\Throwable $e) {
             // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
