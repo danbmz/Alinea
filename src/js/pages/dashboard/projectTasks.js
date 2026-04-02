@@ -157,23 +157,39 @@ import { registerTask } from '../../api/dashboardAPI.js';
         completed ? card.classList.add('completed') : ''; 
         card.dataset.id = task.id;
         const cardContent = `
-            <div class="task-header"> 
-                <div class="task-header-top">
-                    <span class="task-status">${task.task_status}</span>
-                    <span class="task-name">${task.task_name}</span>
+            <div class="task-cont">
+                <div class="task-header"> 
+                    <div class="task-header-top">
+                        <span class="task-status">${task.task_status}</span>
+                        <span class="task-name">${task.task_name}</span>
+                    </div>
                 </div>
-                <p class="task-details">${task.description}</p>
+                <div class="task-actions">
+                    <button class="task-btn" title="Ver descripción"> > </button>
+                    <input type="checkbox" data-id="${task.id}" ${completed ? 'checked' : ''} class="checkbox"/>
+                    <span class="task-delete" title="Eliminar">D</span>
+                </div>
             </div>
-            <div class="task-checkbox">
-                <button class="task-btn" title="Ver descripción"> > </button>
-                <input type="checkbox" data-id="${task.id}" ${completed ? 'checked' : ''} class="checkbox"/>
-                <span class="task-delete" title="Eliminar">D</span>
+            <div class="task-description">
+                <p class="task-details">${task.description}</p>
             </div>
         `;
 
         card.innerHTML = cardContent;
         return card;
     }
+
+    // Funcion para desplegar descripcion de cada tarea
+    document.addEventListener('click', (e) => {
+        if(!e.target.classList.contains("task-btn")) return;
+
+        const card = e.target.closest('.task-card');
+        const description = card.querySelector('.task-description');
+        const icon = e.target;
+
+        description.classList.toggle("active");
+        icon.classList.toggle("icon-animation");
+    })
 
     // Funcion para renderizar tareas en la primera carga
     async function chargeTasks(){
@@ -318,9 +334,8 @@ import { registerTask } from '../../api/dashboardAPI.js';
     document.addEventListener('change', async (e) => {
         if(!e.target.classList.contains('checkbox')) return;
 
-        const checkbox = e.target;
-        const id = Number(checkbox.dataset.id);
-        const isChecked = checkbox.checked;
+        const id = Number(e.target.dataset.id);
+        const isChecked = e.target.checked;
 
         try {
             // FECTH PARA ACTUALIZAR ESTADO DE LA TAREA`
@@ -334,6 +349,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
                     if (Number(task.id) === id) {
                         return {
                             ...task,
+                            task_status: isChecked ? 'Completado' : 'Pendiente',
                             completed: isChecked ? 1 : 0,
                             completed_at: isChecked ? new Date().toISOString() : null
                         };
@@ -344,7 +360,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
             // Y despues actualizamos la UI
             setTimeout(()=> {
                 renderTasks();
-                const card = checkbox.closest('.task-card');
+                const card = e.target.closest('.task-card');
                 card.classList.toggle('completed', isChecked);  
             }, 500)
 
@@ -353,11 +369,6 @@ import { registerTask } from '../../api/dashboardAPI.js';
             checkbox.checked = !isChecked;
             showModal('Error al actualizar la tarea', 'error');
         }
-
-       
-        console.log(tasksArray);
-
-        
     })
 
     // Llamamos a la funcion que renderiza las tareas

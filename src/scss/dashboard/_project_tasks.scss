@@ -45,10 +45,11 @@
     max-height: 80dvh;
     overflow-y: auto;
 }
-
-.task-card{
+.task-cont{
     display: flex;
     justify-content: space-between;
+}
+.task-card{
     padding: 1.5rem;
     background-color: $blanco;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -80,11 +81,31 @@
     color: $gris;
     background-color: transparent;
     border: none;
+    transition: all 0.3s ease-in-out;
+}
+.task-btn.icon-animation {
+    transform: rotate(90deg);
+}
+.task-description{
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+}
+.task-description.active{
+    max-height: 200px;
+    overflow: scroll;
 }
 .task-details{
-    display: none;
+    display: flex;
+    justify-content: flex-start;
+    margin: .5rem 0 0 0;
+    padding-top: .5rem;
+    font-size: 1.4rem;
+    color: $grisOscuro;
+    border-top: 1px solid $grisClaro;
 }
-.task-checkbox{
+
+.task-actions{
     display: flex;
     gap: 1rem;
     align-items: center;
