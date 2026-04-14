@@ -10,7 +10,7 @@
     </div>
 
     <section class="tasks-list" id="tasks-list"></section>
-    <section class="completed-task-list">
+    <section class="completed-task-list hidden">
         <h3>Tareas completadas</h3>
         <div class="completed-section"></div>
     </section>
@@ -19,6 +19,7 @@
 
 <?php
     $script = "
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
         <script type='module' src='/build/js/pages/dashboard/projectTasks.js'></script>
     ";
 ?>

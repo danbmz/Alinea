@@ -1,25 +1,23 @@
 import { showAlerts, showMessage } from '../../helpers/alerts.js';
-import { showModal } from '../../components/modals.js';
+import { showModal, closeModal } from '../../components/modals.js';
 import { validateTaskForm } from '../../validators/dashboard/newTaskForm.js';
-import { closeModal } from '../../components/modals.js';
-import { checkTask, deleteTask, getTasks, updateTask } from '../../api/dashboardAPI.js';
-import { registerTask } from '../../api/dashboardAPI.js';
+import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../../api/dashboardAPI.js';
 
 (( async ()=>{
     // CONTENEDORES de las tareas
     const pendingContainer = document.querySelector('.tasks-list');
     const completedSection = document.querySelector('.completed-task-list');
     const completedContainer = completedSection.querySelector('.completed-section');
-    // Recuperar la id del proyecto mediante la url
+    // Recuperar la url del proyecto mediante la url de la vista/pagina
     const params = new URLSearchParams(window.location.search);
     const url = params.get("id");
-    // Variable para manejar estado de tareas
+    // Variable para manejar el ESTADO de tareas
     let tasksArray = [];
     // Boton que abre el modal para crear nueva tarea
     const newTaskBtn= document.querySelector('#new-task');
     newTaskBtn.addEventListener('click', openModal);
 
-    // Funcion que CREA una nueva tarea
+    // CREA UN MODAL - que contiene el formulario para crear una nueva tarea
     function openModal() {
         const modal = document.createElement("DIV");
         modal.classList.add("modal");
@@ -87,9 +85,8 @@ import { registerTask } from '../../api/dashboardAPI.js';
                     // Registramos la tarea
                     const response = await registerTask(dataForm);
                     if(response.ok){
-                        // ACTUALIZAMOS EL ESTADO, agregando la nueva tarea
-                        const newTask = response.data.data.task; 
-                        newTask.forEach(task => tasksArray.push(task));
+                        // ACTUALIZAMOS EL ESTADO, agregando la nueva tarea, despues borramos el modal y volvemos a renderizar
+                        addTasks(response.data.data.task);
                         modal.remove();
                         renderTasks();
                     } else {
@@ -109,25 +106,64 @@ import { registerTask } from '../../api/dashboardAPI.js';
         })
     }
 
-    // Funcion para renderizar las cards de tareas
-    function renderTasks(){
-        // Verificamos que existe el mensaje, y si existe lo eliminamos.
-        const message = document.querySelector(".no-projects-message");
-        if(message){
-            message.remove();
+    // PRIMERA CARGA  - Obtiene y renderiza las tareas de la base de datos
+    async function chargeTasks(){
+        try {
+            const response = await getTasks(url);
+
+            // Validar que haya respuesta
+            if(!response.ok) {
+                showModal('Error al cargar tus tareas', 'error', '/user/project', 'volver a intentar');
+            }
+
+            // Actualizamos el estado con el resultado de la base
+            setTasks(response.data.data.tasks);
+            renderTasks();
+
+        } catch (error) {
+            showModal(error || 'Error inesperado', 'error', `/user/projects`);
         }
+    }
+
+    // NORMALIZA EL TIPO DE DATOS - cambia los numeros como STRINGS a NUMBERS
+    function normalizeTasks(tasks){
+        return tasks.map(task => ({
+            ...task,
+            id: Number(task.id),
+            completed: Number(task.completed),
+            project_id: Number(task.project_id)
+        }));
+    }
+
+    // ACTUALIZA EL ESTADO - pasando las tareas primero por normalizacion
+    function setTasks(tasks){
+        tasksArray = normalizeTasks(tasks);
+    }
+
+    // AGREGA UNA NUEVA TAREA AL ESTADO - la normaliza y despues agrega al estado
+    function addTasks(tasks){
+        const normalized = normalizeTasks(tasks);
+        tasksArray = [...tasksArray, ...normalized];
+    }
+
+    // VALIDA - Verifica que existan tareas a renderizar y llama a las funciones encargadas.
+    function renderTasks(){
 
         const pending = tasksArray.filter(t => Number(t.completed) === 0);
         const completed = tasksArray.filter(t => Number(t.completed) === 1);
-        console.log(completed);
-
-        renderPendingTasks(pending);
+        
         renderCompletedTasks(completed);
-
+        renderPendingTasks(pending);
+        
         completedSection.classList.toggle("hidden", completed.length === 0);
+
+        // Agregar mensaje si no hay tareas
+        if(pending.length === 0){
+            showMessage(pendingContainer, 'Aún no tienes Tareas creadas. Crea uno ahora para comenzar a trabajar.')
+        }
     }
 
-    // Funcion para renderizar tareas pendientes
+    // PENDIENTES - Se ocupa de renderizar las tareas pendientes Si existen.
     function renderPendingTasks(tasks){
         pendingContainer.innerHTML = "";
 
@@ -137,7 +173,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
         });
     }
 
-    // Funcion para renderizar tareas completadas
+    // COMPLETADAS - Se ocupa de renderizar las tareas completadas Si existen.
     function renderCompletedTasks(tasks){
         completedContainer.innerHTML = "";
 
@@ -147,7 +183,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
         });
     }
 
-    // Funcion para crear la card de cada tarea
+    // RENDERIZA - Crea de 0 cada card para cada tarea
     function createTaskCard(task){
         const card = document.createElement("DIV");
         card.classList.add('task-card');
@@ -179,7 +215,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
         return card;
     }
 
-    // Funcion para desplegar descripcion de cada tarea
+    // DESPLEGAR - la descripcion de cada tarea
     document.addEventListener('click', (e) => {
         if(!e.target.classList.contains("task-btn")) return;
 
@@ -191,35 +227,7 @@ import { registerTask } from '../../api/dashboardAPI.js';
         icon.classList.toggle("icon-animation");
     })
 
-    // Funcion para renderizar tareas en la primera carga
-    async function chargeTasks(){
-        try {
-            const response = await getTasks(url);
-
-            // Validar que haya respuesta
-            if(!response.ok) {
-                showModal('Error al cargar tus tareas', 'error', '/user/project', 'volver a intentar');
-            }
-            // sincronizar las tareas de la base con la variable tasks
-            tasksArray = response.data.data.tasks;
-            // Si no existen tareas, mostramos un mensaje;
-            if(tasksArray.length === 0){
-                showMessage(pendingContainer, 'Aún no tienes Tareas creadas. Crea uno ahora para comenzar a trabajar.')
-                completedSection.classList.add('hidden');
-                return;
-            } 
-
-            // Si no hay problemas, renderizamos las tareas
-            if(response.ok) {
-                renderTasks();
-                console.log(tasksArray);
-            } 
-        } catch (error) {
-            showModal(error || 'Error inesperado', 'error', `/user/projects`);
-        }
-    }
-
-    // ACTUALIZAR - EDITAR NOMBRE DE TAREA
+    // ACTUALIZAR - Edita el nombre de la tarea
     document.addEventListener('dblclick', (e) => {
         if (!e.target.classList.contains("task-name")) return;
 
@@ -297,40 +305,59 @@ import { registerTask } from '../../api/dashboardAPI.js';
 
     });
        
-    // ELIMINAR TAREA
-    document.addEventListener('click',async (e) => {
+    // ELIMINAR TAREA - pregunta antes de borrar
+    document.addEventListener('click', (e) => {
 
         if(!e.target.classList.contains('task-delete')) return;
 
-        // Ocupamos un nuevo modal para confirmar acciones que quiera realizar el usuario
         const card = e.target.closest('.task-card');
         const deletedId = Number(card.dataset.id);
 
-        // Hacer peticion 
+        // Modal para confirmar accion
+        Swal.fire({
+            title: "¿Estas seguro?",
+            text: "No podras deshacer el cambio.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Eliminar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if(result.isConfirmed) {
+                remove(card, deletedId);
+            }
+        });  
+    });
+
+    // ELIMINA TAREA - se encarga de mandar la peticion a la base
+    async function remove(card, deletedId){
         try {
             const response = await deleteTask(deletedId);
             if(response.ok){
                 // Actualizamos el estado, eliminando la tarea correspondiente a la eliminada en la base
                 tasksArray = tasksArray.filter(task => task.id !== deletedId);
+
                 // Agregamos animacion de salida
                 card.classList.add('fadeOut');
                 setTimeout(()=> {
-                    card.remove();
-                    // Verificamos el estado, si ya no existen tareas, procedemos a mostrar el mensaje.
-                    if (tasksArray.length === 0) {
-                        showMessage(pendingContainer, 'Aún no tienes Tareas creadas. Crea uno ahora para comenzar a trabajar.');
-                    }
+                    Swal.fire({
+                        title: "Eliminado!",
+                        text: "Tarea eliminada exitosamente!",
+                        icon: "success",
+                        timer: 2500
+                    });
 
-                }, 1000)
+                    renderTasks();
+                }, 300)
+
             } else {
                 showModal(response.data.message, 'error')
             }
         } catch (error) {
             showModal('Error interno', 'error')
-        }        
-    });
+        }      
+    }
 
-    // FUNCION PARA HACER CHECKBOX
+    // CHECKBOX - Marcar tarea como completa
     document.addEventListener('change', async (e) => {
         if(!e.target.classList.contains('checkbox')) return;
 
@@ -343,7 +370,6 @@ import { registerTask } from '../../api/dashboardAPI.js';
 
             // Si la respuesta es positiva actualizamos el estado local de las tareas
             if(response.ok){
-                console.log('actualizo los cambios')
                 // ✅ Actualizar estado local
                 tasksArray = tasksArray.map(task => {
                     if (Number(task.id) === id) {
@@ -371,6 +397,6 @@ import { registerTask } from '../../api/dashboardAPI.js';
         }
     })
 
-    // Llamamos a la funcion que renderiza las tareas
+    // Llamamos a la funcion que renderiza las tareas la primera vez que entramos a la vista
     await chargeTasks();
 }))()
