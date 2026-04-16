@@ -107,7 +107,7 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
     }
 
     // PRIMERA CARGA  - Obtiene y renderiza las tareas de la base de datos
-    async function chargeTasks(){
+    async function loadTasks(){
         try {
             const response = await getTasks(url);
 
@@ -159,7 +159,7 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
 
         // Agregar mensaje si no hay tareas
         if(pending.length === 0){
-            showMessage(pendingContainer, 'Aún no tienes Tareas creadas. Crea uno ahora para comenzar a trabajar.')
+            showMessage(pendingContainer, 'Crea tu primera tarea para comenzar a trabajar en tu proyecto.')
         }
     }
 
@@ -201,9 +201,9 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
                     </div>
                 </div>
                 <div class="task-actions">
-                    <button class="task-btn" title="Ver descripción"> > </button>
+                    <button class="task-btn" title="Ver descripción"> <i class="fa-solid fa-eye"></i> </button>
                     <input type="checkbox" data-id="${task.id}" ${completed ? 'checked' : ''} class="checkbox"/>
-                    <span class="task-delete" title="Eliminar">D</span>
+                    <button class="task-delete" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
             <div class="task-description">
@@ -217,15 +217,13 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
 
     // DESPLEGAR - la descripcion de cada tarea
     document.addEventListener('click', (e) => {
-        if(!e.target.classList.contains("task-btn")) return;
+        if(!e.target.classList.contains('task-btn')) return;
 
         const card = e.target.closest('.task-card');
         const description = card.querySelector('.task-description');
-        const icon = e.target;
 
         description.classList.toggle("active");
-        icon.classList.toggle("icon-animation");
-    })
+    });
 
     // ACTUALIZAR - Edita el nombre de la tarea
     document.addEventListener('dblclick', (e) => {
@@ -321,12 +319,12 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
             showCancelButton: true,
             confirmButtonText: "Eliminar",
             cancelButtonText: "Cancelar"
-        }).then((result) => {
+        }).then(async (result) => {
             if(result.isConfirmed) {
-                remove(card, deletedId);
+                await remove(card, deletedId);
             }
         });  
-    });
+        });
 
     // ELIMINA TAREA - se encarga de mandar la peticion a la base
     async function remove(card, deletedId){
@@ -398,5 +396,5 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
     })
 
     // Llamamos a la funcion que renderiza las tareas la primera vez que entramos a la vista
-    await chargeTasks();
+    await loadTasks();
 }))()

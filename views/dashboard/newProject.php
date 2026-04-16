@@ -1,4 +1,4 @@
-<h1 class="m_title"><?php echo $title; ?></h1>
+<h1 class="m-title"><?php echo $title; ?></h1>
 
 <!-- Formulario de creación de proyecto -->
 <div class="m_form-project">

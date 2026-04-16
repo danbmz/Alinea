@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Open+Sans&display=swap" rel="stylesheet"> 
+    <script src='https://kit.fontawesome.com/a77864d23f.js' crossorigin='anonymous'></script>
     <link rel="stylesheet" href="/build/css/app.css">
 </head>
 <body>

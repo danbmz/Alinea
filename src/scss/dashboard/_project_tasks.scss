@@ -7,7 +7,6 @@
     justify-content: space-between;
     p{
         margin: 0;
-        font-size: 1.7rem;
         width: 80%;
     }
 }
@@ -82,9 +81,12 @@
     background-color: transparent;
     border: none;
     transition: all 0.3s ease-in-out;
+    i{
+        pointer-events: none;
+    }
 }
-.task-btn.icon-animation {
-    transform: rotate(90deg);
+.task-btn:hover {
+    color: $morado;
 }
 .task-description{
     max-height: 0;
@@ -112,6 +114,7 @@
 }
 .checkbox{
     width: 15px;
+    cursor: pointer;
   height: 15px;
   border: 2px solid #6366f1;
   border-radius: 6px;
@@ -129,8 +132,18 @@
 }
 .task-delete{
     cursor: pointer;
+    background-color: transparent;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    i{
+        pointer-events: none;
+    }
+}
+
+.task-delete:hover{
+    color: $red;
 }
 
 .completed{
-    opacity: .5;
+    opacity: .6;
 }

@@ -1,4 +1,6 @@
-<h1 class="m_title"><?php echo $title; ?></h1>
+<h1 class="m-title"><?php echo $title; ?></h1>
+
+
 
 <!-- Contenedor para los proyectos -->
 <div class='task-container' >

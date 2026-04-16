@@ -20,9 +20,9 @@
 
 @mixin btn($bgColor, $colorTexto) {
     background-color: $bgColor;
-    padding: 1.2rem 2rem;
+    padding: 1rem 1.8rem;
     color: $colorTexto;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     display: inline-block;
     font-weight: 700;
     border: none;

@@ -3,12 +3,11 @@
 
 // Estilos para cuando no existen proyectos creados
 .no-projects-message{
-    font-size: 2rem;
     color: $gris;
-    margin-bottom: 2rem;
     text-align: center;
 }
 .no-projects-actions{
+    margin-top: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,7 +25,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
     text-decoration: none;
-    cursor: pointer;
     border-radius: 8px;
     color: $blanco;
 
@@ -50,6 +48,19 @@
     border-radius: 8px 8px 0 0;
     h3{
         margin-bottom: .8rem;
+    }
+}
+.project-header{
+    display: flex;
+    justify-content: space-between;
+}
+.header-btn{
+    background: none;
+    border: none;
+    color: $blanco;
+    cursor: pointer;
+    i{
+        pointer-events: none;
     }
 }
 .project-meta{
@@ -106,4 +117,38 @@
 #avance{
     width: 60%;
     height: 20px;
+}
+
+// Estilos para la seccion de filtros
+.filter-section{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-item{
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    color: $morado;
+}
+
+#search-filter{
+    border: 1px solid $grisOscuro;
+    border-radius: 4px;
+    background-color: transparent;
+    padding: .3rem;
+    outline: none;
+    color: $grisOscuro;
+    font-size: 1.4rem;
+}
+
+#status-filter{
+    padding: .3rem;
+    border: 1px solid $grisOscuro;
+    border-radius: 4px;
+    font-size: 1.4rem;
+    outline: none;
+    background-color: transparent;
+    color: $grisOscuro;
 }
