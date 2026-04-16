@@ -1,6 +1,6 @@
 import { showModal } from '../../components/modals.js';
 import { showMessage } from '../../helpers/alerts.js';
-import { getUserProjects } from '../../api/dashboardAPI.js';
+import { deleteProject, getUserProjects } from '../../api/dashboardAPI.js';
 
 (( async () => {
     // CONTENEDOR - donde se renderizan los proyctos
@@ -33,6 +33,7 @@ import { getUserProjects } from '../../api/dashboardAPI.js';
     // ACTUALIZA UI - funcion encargada de actualizar la UI cuando el estado cambia
     function renderProjects(){
         if(projectsArray.length === 0){
+            projectsContainer.classList.remove('projects-list');
             noProjectsMessage("No tienes ningun proyecto. Crea uno para comenzar a trabajar.")
             return;
         }
@@ -66,18 +67,24 @@ import { getUserProjects } from '../../api/dashboardAPI.js';
 
             const projectElement = document.createElement('div');
             projectElement.classList.add('project-item');
+            projectElement.dataset.id = project.id;
             projectElement.innerHTML = `
                 <div class="project-item-header" style="background-color: ${project.color};"> 
                     <div class="project-header">
-                        <h3>${project.project_name}</h3>
+                        <h3 class="header-title" title="Ver Proyecto">${project.project_name}</h3>
+                        <div class="project-meta"> 
+                            <span class="project-status">${project.project_status}</span>
+                            ${project.priority === 'Alta' ? '<span class="project-priority high">Alta</span>' : ''}
+                            ${project.priority === 'Media' ? '<span class="project-priority medium">Media</span>' : ''}
+                            ${project.priority === 'Baja' ? '<span class="project-priority low">Baja</span>' : ''}
+                        </div>
+                    </div>
+                    <div>
                         <button class="header-btn"> <i class="fa-solid fa-ellipsis"></i> </button>
                     </div>
-                    <div class="project-meta"> 
-                        <span class="project-status">${project.project_status}</span>
-                        ${project.priority === 'Alta' ? '<span class="project-priority high">Alta</span>' : ''}
-                        ${project.priority === 'Media' ? '<span class="project-priority medium">Media</span>' : ''}
-                        ${project.priority === 'Baja' ? '<span class="project-priority low">Baja</span>' : ''}
-                        
+                    <div class="menu-options">
+                        <button class="menu-item edit">Editar</button>
+                        <button class="menu-item delete">Eliminar</button>
                     </div>
                 </div>
                 <div class="project-item-body"> 
@@ -92,7 +99,10 @@ import { getUserProjects } from '../../api/dashboardAPI.js';
                 </div>
                 `;
             projectsContainer.appendChild(projectElement);
-            projectElement.onclick = showProject(project);
+
+            // Redireccionamos a la vista del proyecto dando click en el titulo
+            const header = projectElement.querySelector('.project-header');
+            header.onclick = showProject(project);;
         });
     }
 
@@ -126,13 +136,14 @@ import { getUserProjects } from '../../api/dashboardAPI.js';
             </div>`;
     }
 
-    // FILTRAR - 
+    // FILTRAR - evento que activa la funcion cuando se quiera filtrar los proyectos
     const filter = document.querySelector('#status-filter');
     filter.addEventListener('change', (e) => {
         currentFilter = e.target.value;
         renderProjects();
     })
 
+    // FILTRA - funcion que filtra los proyectos por status.
     function getFilteredProjects() {
         if (currentFilter === 'all') return projectsArray;
 
@@ -140,6 +151,79 @@ import { getUserProjects } from '../../api/dashboardAPI.js';
             project.project_status === currentFilter
         );
     }
+
+    // MENU - Abre un menu de opciones en cada proyecto
+    document.addEventListener('click', (e) => {
+        if(!e.target.classList.contains('header-btn')) return;
+        
+        const card = e.target.closest('.project-item');
+        const menu = card.querySelector('.menu-options')
+
+        document.querySelectorAll('.menu-options.active').forEach(m => {
+            if (m !== menu) m.classList.remove('active');
+        });
+
+        // 👉 toggle del menú actual
+        menu.classList.toggle('active');
+    })
+
+    // COMPRUEBA - pregunta antes de borrar el proyecto de la base
+    document.addEventListener('click', (e) => {
+        if(!e.target.classList.contains('delete')) return;
+
+        const card = e.target.closest('.project-item');
+        const id = Number(card.dataset.id);
+
+        // Modal para confirmar accion
+        Swal.fire({
+            title: "¿Estas seguro?",
+            text: "No podras deshacer el cambio.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Eliminar",
+            cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+            if(result.isConfirmed) {
+                await remove(card, id);
+            }
+        });  
+
+        const menu = card.querySelector('.menu-options');
+        menu.classList.remove('active');
+    })
+
+    // ELIMINAR - funcion que elimina la tarea del estado y de la base
+    async function remove(card, id){
+        try {
+            const response = await deleteProject(id);
+
+            if(response.ok){
+                projectsArray = projectsArray.filter(project => project.id !== id);
+                console.log(projectsArray)
+
+                card.classList.add('fadeOut');
+                setTimeout(()=> {
+                    Swal.fire({
+                        title: "Eliminado!",
+                        text: "Proyecto eliminado exitosamente!",
+                        icon: "success",
+                        timer: 2500
+                    });
+
+                    renderProjects();
+                }, 300)
+            } else {
+                showModal(response.data.message, 'error')
+            }
+        } catch (error) {
+            showModal('Error al procesar la solicitud, intentalo de nuevo más tarde.', 'error')
+        }
+    }
+
+    // EDITAR - abre un modal con formulario para editar el proyecto
+    
+
+
 
     // Cargamos proyectos al entrar
     await loadUserProjects();

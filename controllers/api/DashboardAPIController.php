@@ -88,6 +88,46 @@ class DashboardAPIController {
         }
     }
 
+    public function deleteProjectAPI($route, $id) {
+        try {
+            // VALIDACIONES - numerico, existe, permisos
+            if (!is_numeric($id)) {
+                return response(400, 'ID inválido');
+            }
+
+            $project = Project::find($id);
+            if (!$project) {
+                return response(404, 'Proyecto no encontrado');
+            }
+
+            session_start();
+            if ($project->user_id !== $_SESSION['id']) {
+                return response(403, 'No autorizado');
+            }
+
+            // ELIMINAR PROYECTO DE MANERA SOFT O HARD
+            $result = $project->delete();
+            if(!$result){
+                return $this->response(400, 'Hubo un error al intentar eliminar el proyecto');
+            } 
+
+            return $this->response(200, 'Proyecto eliminado con exito');
+
+        } catch (\Throwable $e) {
+            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+            return $this->response(
+                500,
+                'Error interno',
+                [
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine()
+                ]
+            );
+        }
+    }
+
     public function createTaskAPI() {
         try{
             $data = json_decode(file_get_contents('php://input'), true);

@@ -32,6 +32,22 @@ export async function getUserProjects() {
     };
 }
 
+export async function deleteProject(id){
+    const URL = `/api/projects/${id}`;
+
+    const response = await fetch(URL, {
+        method: 'DELETE',
+    });
+
+    const data = await response.json();
+
+    return {
+        ok: response.ok,
+        status: response.status,
+        data
+    };
+}
+
 export async function getTasks(url) {
     const URL = 'http://localhost:3000/api/tasks';
 

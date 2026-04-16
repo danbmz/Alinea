@@ -22,6 +22,7 @@
 
 <?php
     $script = "
-        <script type='module' src='/build/js/pages/dashboard/projects.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>    
+    <script type='module' src='/build/js/pages/dashboard/projects.js'></script>
     ";
 ?>
