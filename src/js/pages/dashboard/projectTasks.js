@@ -52,7 +52,7 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
                     <input type="submit" value="Crear" class="btn" id="create-task-btn">
                 </div>
             </form>
-            <button class="btn-close-modal" id='cancell-btn'>X</button>
+            <button class="btn-close-modal"><i class="fa-solid fa-x"></i></button>
         </div>
         `;
         modal.innerHTML = form;
@@ -63,7 +63,7 @@ import { registerTask, checkTask, deleteTask, getTasks, updateTask } from '../..
         body.appendChild(modal);
 
         // Seleccionamos el boton Cancelar y agregamos funcion closeModal()
-        const btnCancel = document.querySelector("#cancell-btn");
+        const btnCancel = document.querySelector(".btn-close-modal");
         btnCancel.onclick = closeModal;
 
         // Si queremos enviar el form

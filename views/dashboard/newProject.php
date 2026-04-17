@@ -33,7 +33,7 @@
             </div>
             
             <div class="form_actions">
-                <input type="submit" class="form-button" value="Crear Proyecto">
+                <input type="submit" class="btn" value="Crear Proyecto">
             </div>
         </form>
     </div>

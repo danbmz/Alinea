@@ -1,6 +1,8 @@
-import { showModal } from '../../components/modals.js';
+import { showModal, closeModal } from '../../components/modals.js';
+import { showAlerts } from '../../helpers/alerts.js';
 import { showMessage } from '../../helpers/alerts.js';
-import { deleteProject, getUserProjects } from '../../api/dashboardAPI.js';
+import { deleteProject, getUserProjects, updateProject } from '../../api/dashboardAPI.js';
+import { validateNewProjectForm } from '../../validators/dashboard/newProjectForm.js';
 
 (( async () => {
     // CONTENEDOR - donde se renderizan los proyctos
@@ -167,7 +169,7 @@ import { deleteProject, getUserProjects } from '../../api/dashboardAPI.js';
         menu.classList.toggle('active');
     })
 
-    // COMPRUEBA - pregunta antes de borrar el proyecto de la base
+    // ELIMINAR - activa el evento y pregunta antes de borrar el proyecto de la base
     document.addEventListener('click', (e) => {
         if(!e.target.classList.contains('delete')) return;
 
@@ -192,14 +194,13 @@ import { deleteProject, getUserProjects } from '../../api/dashboardAPI.js';
         menu.classList.remove('active');
     })
 
-    // ELIMINAR - funcion que elimina la tarea del estado y de la base
+    // FUNCION ELIMINAR - funcion que elimina la tarea del estado y de la base
     async function remove(card, id){
         try {
             const response = await deleteProject(id);
 
             if(response.ok){
                 projectsArray = projectsArray.filter(project => project.id !== id);
-                console.log(projectsArray)
 
                 card.classList.add('fadeOut');
                 setTimeout(()=> {
@@ -221,9 +222,131 @@ import { deleteProject, getUserProjects } from '../../api/dashboardAPI.js';
     }
 
     // EDITAR - abre un modal con formulario para editar el proyecto
-    
+    document.addEventListener('click', (e) =>{
+        if(!e.target.classList.contains('edit')) return;
+        const card = e.target.closest('.project-item');
+        const cardId = Number(card.dataset.id);
 
+        const menu = card.querySelector('.menu-options');
+        menu.classList.remove('active');
 
+        editFormModal(cardId);
+    })
+
+    // MODAL FORMULARIO EDITAR - crea el modal con un formulario
+    function editFormModal(cardId){
+        const modal = document.createElement("DIV");
+        modal.classList.add("modal");
+
+        let form = "";
+
+        // Navegamos el estado para acceder a los datos del proyecto correspondiente al proyecto seleccionado
+        projectsArray.forEach(project => {
+            if(project.id === cardId) {
+                form = `
+                    <div class="m_form-project">
+                        <div class="form-container">
+                            <form method="POST" class="general-form">
+                                <div class="alerts-container"></div>
+
+                                <div class="form-group">
+                                    <label for="name" class="form-label">Nombre del proyecto:</label>
+                                    <input type="text" id="name" name="project_name" class="form-input" value="${project.project_name}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="description" class="form-label">Especificaciones:</label>
+                                    <textarea id="description" name="description" class="form-input" >${project.description}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="priority" class="form-label">Prioridad:</label>
+                                    <select name="priority" id="priority" class="form-input" >
+                                        <option value="" disabled selected>Seleccionar</option>
+                                        <option value="Baja"${project.priority === "Baja" ? "selected" : ""}>Baja</option>
+                                        <option value="Media"${project.priority === "Media" ? "selected" : ""}>Media</option>
+                                        <option value="Alta"${project.priority === "Alta" ? "selected" : ""}>Alta</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="estimated_end_date" class="form-label">Fecha de entrega:</label>
+                                    <input type="date" value="${project.estimated_end_date}" id="estimated_end_date" name="estimated_end_date" value="" class="form-input" >
+                                </div>
+                                <div class="form-group">
+                                    <label for="color" class="form-label">Color de la tarjeta:</label>
+                                    <input type="color" id="color" name="color" class="form-input" value="${project.color   }">
+                                </div>
+                                
+                                <div class="form_actions">
+                                    <input type="submit" class="btn" value="Guardar">
+                                </div>
+                            </form>
+                            <button class="btn-close-modal"><i class="fa-solid fa-x"></i></button>
+                        </div>
+                    </div>
+                `;
+            }
+        })
+
+        modal.innerHTML = form;
+
+        // Insertamos el modal sobre el BODY
+        const body = document.querySelector("body");
+        body.classList.add("no-scroll");
+        body.appendChild(modal);
+
+        // Seleccionamos el boton Cancelar y agregamos funcion closeModal()
+        document.addEventListener('click', (e) => {
+            if(!e.target.classList.contains('btn-close-modal')) return;
+            closeModal();
+        })
+
+        // Si queremos enviar el form
+        const formProject = document.querySelector('.general-form');
+        formProject.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const dataForm = {
+                project_name: formProject.project_name.value.trim(),
+                description: formProject.description.value.trim(),
+                priority: formProject.priority.value,
+                estimated_end_date: formProject.estimated_end_date.value,
+                color: formProject.color.value
+            }
+
+            const erros = validateNewProjectForm(dataForm);
+
+            // Si no hay errores, entonces creamos la tarea
+            if(erros.length === 0){
+                try {
+                    // Registramos la tarea
+                    const response = await updateProject(dataForm, cardId);
+                    if(response.ok){
+                        // ACTUALIZAMOS EL ESTADO, actualizando el registro correspondiente al editado
+                        const updatedProject = response.data.data.project;
+
+                        projectsArray = projectsArray.map(project => {
+                            if (project.id === Number(updatedProject.id)) {
+                                return updatedProject; // reemplaza el proyecto editado
+                            }
+                            return project;
+                        });
+
+                        modal.remove();
+                        renderProjects();
+                    } else {
+                        if(response.status === 422 && response.data.data.errors){
+                            showAlerts(response.data.data.errors);
+                        } else {
+                            showModal(response.data.message || 'Error inesperado', 'error', `/user/project?id=${url}`);
+                        }
+                    }
+                } catch (error) {
+                    showModal(error || 'Error inesperado', 'error', `/user/projects`);
+                }
+            } else { // Mostramos mensajes de error
+                showAlerts(erros);
+            }
+        })
+    }
 
     // Cargamos proyectos al entrar
     await loadUserProjects();

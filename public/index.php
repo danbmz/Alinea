@@ -35,15 +35,15 @@ $router->post('/api/reset', [ApiControllers\AuthApiController::class, 'resetPass
 $router->post('/api/verify-account', [ApiControllers\AuthApiController::class, 'verifyAccountAPI']);
 $router->post('/api/validate-token', [ApiControllers\AuthApiController::class, 'validateTokenAPI']);
 
-// API - RUTAS DEL DASHBOARD
+// API - RUTAS DEL DASHBOARD (CRUD de proyectos)
 $router->get('/api/projects', [ApiControllers\DashboardApiController::class, 'getProjectsAPI']);
 $router->post('/api/projects/create', [ApiControllers\DashboardAPIController::class, 'createProjectAPI']);
 $router->delete('/api/projects/{id}', [ApiControllers\DashboardAPIController::class, 'deleteProjectAPI']);
+$router->patch('/api/projects/{id}', [ApiControllers\DashboardAPIController::class, 'updateProjectAPI']);
 
+// API - RUTAS DEL DASHBOARD (CRUD de tareas)
 $router->post('/api/tasks', [ApiControllers\DashboardAPIController::class, 'getTasksAPI']);
 $router->post('/api/tasks/create', [ApiControllers\DashboardAPIController::class, 'createTaskAPI']);
-
-// Un solo endpoint para actualizar-borrar registro de tareas
 $router->patch('/api/tasks/{id}', [ApiControllers\DashboardAPIController::class, 'updateTaskAPI']);
 $router->delete('/api/tasks/{id}', [ApiControllers\DashboardAPIController::class, 'deleteTaskAPI']);
 

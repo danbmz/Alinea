@@ -128,6 +128,73 @@ class DashboardAPIController {
         }
     }
 
+    public function updateProjectAPI($route, $id) {
+        try {
+            // VALIDACIONES - numerico, existe, permisos
+            if (!is_numeric($id)) {
+                return response(400, 'ID inválido');
+            }
+
+            $project = Project::find($id);
+            if (!$project) {
+                return response(404, 'Proyecto no encontrado');
+            }
+
+            session_start();
+            if ($project->user_id !== $_SESSION['id']) {
+                return response(403, 'No autorizado');
+            }
+
+            // Verificamos que recibimos datos mediante el body de la peticion
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                return $this->response(400, 'Datos inválidos');
+            }
+  
+            // Sincronizamos los datos recibidos con el proyecto que queremos actualizar, solo los campos que existan en el modelo
+            $fieldsToUpdate = [];
+            foreach($data as $key => $value) {
+                if(property_exists($project, $key)) {
+                    $project->$key = $value;
+                    $fieldsToUpdate[] = $key;
+                }
+            }
+
+            // Validación básica del formulario
+            $alerts = $project->validateNewProject();
+
+            if (!empty($alerts['error'])) {
+                return $this->response(422, 'Errores de validación', ['errors' => $alerts['error']]);
+            }
+
+            $result = false;
+
+            // Solo actualiza si hay algo que cambiar
+            if(!empty($fieldsToUpdate)) {
+                $result = $project->update($fieldsToUpdate);
+            }
+
+            if($result){
+                return $this->response(200, 'Proyecto actualizado correctamente.', ['project' => $project]);
+            } else {
+                return $this->response(401, 'Error al intentar actualizar el proyecto.');
+            }
+        } catch (\Throwable $e) {
+            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+            return $this->response(
+                500,
+                'Error interno',
+                [
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine()
+                ]
+            );
+        }
+    }
+
     public function createTaskAPI() {
         try{
             $data = json_decode(file_get_contents('php://input'), true);
