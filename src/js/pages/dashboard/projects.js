@@ -11,6 +11,8 @@ import { validateNewProjectForm } from '../../validators/dashboard/newProjectFor
     let projectsArray = [];
     // ESTADO - para aplicar filtros
     let currentFilter = 'all';
+    // ESTADO - para busqueda por search
+    let searchTerm = '';
 
 
     // PRIMERA CARGA - muestra los proyectos del usuario la primera vez que entra a la vista
@@ -44,7 +46,7 @@ import { validateNewProjectForm } from '../../validators/dashboard/newProjectFor
 
         if(filtered.length === 0){
             projectsContainer.classList.remove('projects-list'); // Quitamos el grid para mostrar bien el mensaje
-            showMessage(projectsContainer, `No tienes proyectos aquí`)
+            showMessage(projectsContainer, `No hay proyectos que mostrar.`)
             return;
         } else {
             projectsContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar proyectos
@@ -138,20 +140,33 @@ import { validateNewProjectForm } from '../../validators/dashboard/newProjectFor
             </div>`;
     }
 
-    // FILTRAR - evento que activa la funcion cuando se quiera filtrar los proyectos
+    // FILTRAR - evento que cambia el valor del estado currentFilter por el seleccionado por el usuario
     const filter = document.querySelector('#status-filter');
     filter.addEventListener('change', (e) => {
         currentFilter = e.target.value;
         renderProjects();
     })
 
-    // FILTRA - funcion que filtra los proyectos por status.
-    function getFilteredProjects() {
-        if (currentFilter === 'all') return projectsArray;
+    // BUSQUEDA - se cambia el valor del estado searchTerm por el escrito por el usuario
+    const searchInput = document.querySelector('#search-filter');
+    searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value.trim().toLowerCase();
+        renderProjects();
+    });
 
-        return projectsArray.filter(project => 
-            project.project_status === currentFilter
-        );
+    // FILTRANDO PROYECTOS - funcion que filtra los proyectos del estado y devuelve los correctos segun el status o termino de busqueda
+    function getFilteredProjects() {
+        return projectsArray.filter(project => {
+
+            const matchStatus = currentFilter === 'all' 
+                || project.project_status === currentFilter;
+
+            const matchSearch = project.project_name
+                .toLowerCase()
+                .includes(searchTerm);
+
+            return matchStatus && matchSearch;
+        });
     }
 
     // MENU - Abre un menu de opciones en cada proyecto
