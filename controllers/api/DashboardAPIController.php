@@ -195,54 +195,6 @@ class DashboardAPIController {
         }
     }
 
-    public function createTaskAPI() {
-        try{
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (!$data) {
-                return $this->response(400, 'Datos inválidos');
-            }
-
-            // Consultamos el proyecto para asegurarnos que exista y que el usuario tenga permiso para agregar tareas
-            $project = Project::where('url', $data['project_id']);
-            session_start();
-            if (!$project || $project->user_id !== $_SESSION['id']) {
-                return $this->response(403, 'No tienes permiso para agregar tareas a este proyecto.');
-            }
-
-            // Validación básica del formulario
-            $task = new Task($data);
-            $alerts = $task->validateNewTask();
-
-            if (!empty($alerts['error'])) {
-                return $this->response(422, 'Errores de validación', ['errors' => $alerts['error']]);
-            }
-
-            // Si no hay errores, asignamos el ID del proyecto a la tarea y la guardamos
-            $task->project_id = $project->id;
-            $result = $task->save();
-
-            if($result) {
-                return $this->response(201, 'Tarea creada exitosamente.', ['task' => [$task]]);
-            } else {
-                return $this->response(500, 'Error al crear nueva tarea.');
-            }
-
-        } catch (\Throwable $e){
-            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
-            return $this->response(
-                500,
-                'Error interno',
-                [
-                    'exception' => get_class($e),
-                    'message'   => $e->getMessage(),
-                    'file'      => $e->getFile(),
-                    'line'      => $e->getLine()
-                ]
-            );
-        }
-    }
-
     public function getTasksAPI() {
         try {        
             $data = json_decode(file_get_contents('php://input'), true);
@@ -275,6 +227,61 @@ class DashboardAPIController {
             return $this->response(200, 'Tareas obtenidas exitosamente.', ['tasks' => $tasks]);
 
         } catch (\Throwable $e) {
+            // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
+            return $this->response(
+                500,
+                'Error interno',
+                [
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage(),
+                    'file'      => $e->getFile(),
+                    'line'      => $e->getLine()
+                ]
+            );
+        }
+    }
+
+    public function createTaskAPI() {
+        try{
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!$data) {
+                return $this->response(400, 'Datos inválidos');
+            }
+
+            // Consultamos el proyecto para asegurarnos que exista y que el usuario tenga permiso para agregar tareas
+            $project = Project::where('url', $data['project_id']);
+            session_start();
+            if (!$project || $project->user_id !== $_SESSION['id']) {
+                return $this->response(403, 'No tienes permiso para agregar tareas a este proyecto.');
+            }
+
+            // Validación básica del formulario
+            $task = new Task($data);
+            $alerts = $task->validateNewTask();
+
+            if (!empty($alerts['error'])) {
+                return $this->response(422, 'Errores de validación', ['errors' => $alerts['error']]);
+            }
+
+            
+            // Si no hay errores, asignamos el ID del proyecto a la tarea y la guardamos
+            $task->project_id = $project->id;
+            $result = $task->save();
+
+            // Si se guardo la tarea, entonces calculamos progreso y actualizamos status
+            $project->updateProgressAndStatus();
+
+            // Guardamos los cambios en la base de datos
+            $project->save();
+
+            if($result) {
+                return $this->response(201, 'Tarea creada exitosamente.', ['task' => [$task]]);
+            } else {
+                return $this->response(500, 'Error al crear nueva tarea.');
+            }
+
+        } catch (\Throwable $e){
             // return $this->response(500, 'Error al procesar la solicitud, intentalo de nuevo más tarde.');
             return $this->response(
                 500,
@@ -347,6 +354,12 @@ class DashboardAPIController {
             // Solo actualiza si hay algo que cambiar
             if(!empty($fieldsToUpdate)) {
                 $result = $task->update($fieldsToUpdate);
+
+                // Si se actualizo, recalculamos progreso y status
+                $project->updateProgressAndStatus();
+
+                // Guardamos los cambios en la base
+                $project->save();
             }
 
             if($result){
@@ -393,6 +406,12 @@ class DashboardAPIController {
             if(!$result){
                 return $this->response(400, 'Hubo un error al intentar eliminar la tarea');
             } 
+
+            // Si se elimino, recalculamos progreso y status
+            $project->updateProgressAndStatus();
+
+            // Guardamos los cambios en la base
+            $project->save();
 
             return $this->response(200, 'Tarea eliminada con exito');
 

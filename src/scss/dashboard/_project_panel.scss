@@ -92,6 +92,8 @@
     display: flex;
     gap: .8rem;
     flex-direction: column;
+    // justify-content: space-between;
+    padding: 1rem 0 1rem 0;
     cursor: pointer;
 }
 .header-btn{
@@ -105,34 +107,46 @@
 }
 .project-meta{
     display: flex;
-    gap : 1rem;
-
-    
+    align-items: center;
+    gap : .5rem;
 }
 .project-status{
-    font-size: 1.3rem;
-    padding: .5rem .8rem;
-    background-color: $green;
-    border-radius: 8px;
+    display: flex;
+    justify-content: left;
+    span{
+        font-size: 1.3rem;
+        padding: .5rem .8rem;
+        background-color: $green;
+        border-radius: 8px;
+    }
 }
 .project-priority{
     font-size: 1.3rem;
-    padding: .5rem .8rem;
-    border-radius: 6px;
     &.high{
-        background-color: $red;
+        color: $red;
+        font-weight: bold;
     }
     &.medium{
-        background-color: $orange;
+        color: $orange;
+        font-weight: bold;
     }
     &.low{
-        background-color: $blue;
+        color: $blue;
+        font-weight: bold;
     }
+}
+.span-priority{
+    font-size: 1.3rem;
+    color: $gris;
 }
 
 .project-item-body{
     padding: 1.2rem 1.5rem;
     border-radius: 0 0 8px 8px;
+}
+.project-deadline{
+    display: flex;
+    justify-content: space-between;
 }
 .project-deadline p{
     margin: 0;

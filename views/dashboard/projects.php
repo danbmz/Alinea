@@ -12,8 +12,12 @@
         <select id="status-filter">
             <option value="all">Todos</option>
             <option value="Pendiente">Pendientes</option>
+            <option value="Activo">En progreso</option>
             <option value="Completado">Completados</option>
-            <option value="Cancelado">Cancelados</option>
+            <option value="" disabled>Prioridad</option>
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
         </select>
     </div>
 </div>

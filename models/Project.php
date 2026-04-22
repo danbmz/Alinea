@@ -38,7 +38,7 @@ class Project extends ActiveRecord {
     public function validateNewProject() {
         // Validaciones del nombre y descripción
         if (!trim($this->project_name)) {
-            self::$alerts['error'][] = 'El nombre del proyecto es obligatorio';
+            self::setAlert('error', 'El nombre es obligatorio desde el back');
         }
         if (strlen($this->project_name) < 5 || strlen($this->project_name) > 100) {
             self::$alerts['error'][] = 'Nombre muy corto o muy largo';
@@ -76,5 +76,37 @@ class Project extends ActiveRecord {
         }
 
         return self::$alerts;
+    }
+
+    public function getTotalTasks() {
+        $id = (int) $this->id;
+
+        $query = "SELECT 
+            COUNT(*) as total,
+            COALESCE(SUM(completed), 0) as completed
+            FROM tasks
+            WHERE project_id = {$id}";
+
+        $result = self::$db->query($query);
+        $data = $result->fetch_assoc();
+
+        return $data;
+    }
+
+    public function updateProgressAndStatus() {
+        $total = $this->getTotalTasks();
+            $progress = (int) $total['total'] > 0 ? ($total['completed'] / $total['total']) * 100 : 0;
+            
+            // actualizamos el progreso del proyecto
+            $this->progress = $progress;
+
+            // Checamos el status del proyecto
+            if ($total['completed'] == $total['total'] && $total['total'] > 0) {
+                $this->project_status = 'Completado';
+            } elseif ($total['completed'] > 0) {
+                $this->project_status = 'Activo';
+            } else {
+                $this->project_status = 'Pendiente';
+            }
     }
 }

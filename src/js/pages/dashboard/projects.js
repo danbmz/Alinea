@@ -76,11 +76,8 @@ import { validateNewProjectForm } from '../../validators/dashboard/newProjectFor
                 <div class="project-item-header" style="background-color: ${project.color};"> 
                     <div class="project-header">
                         <h3 class="header-title" title="Ver Proyecto">${project.project_name}</h3>
-                        <div class="project-meta"> 
-                            <span class="project-status">${project.project_status}</span>
-                            ${project.priority === 'Alta' ? '<span class="project-priority high">Alta</span>' : ''}
-                            ${project.priority === 'Media' ? '<span class="project-priority medium">Media</span>' : ''}
-                            ${project.priority === 'Baja' ? '<span class="project-priority low">Baja</span>' : ''}
+                        <div class="project-status">
+                            <span>${project.project_status}</span>
                         </div>
                     </div>
                     <div>
@@ -94,6 +91,12 @@ import { validateNewProjectForm } from '../../validators/dashboard/newProjectFor
                 <div class="project-item-body"> 
                     <div class="project-deadline">
                         <p>Fecha de entrega: <span id="body-date-span">${fechaES}</span></p>
+                        <div class="project-meta"> 
+                            <span class="span-priority">Prioridad: </span>
+                            ${project.priority === 'Alta' ? '<span class="project-priority high">Alta</span>' : ''}
+                            ${project.priority === 'Media' ? '<span class="project-priority medium">Media</span>' : ''}
+                            ${project.priority === 'Baja' ? '<span class="project-priority low">Baja</span>' : ''}
+                        </div>
                     </div>
                     <div class="project-progress"> 
                         <label for="avance">Avance: </label>
@@ -159,7 +162,7 @@ import { validateNewProjectForm } from '../../validators/dashboard/newProjectFor
         return projectsArray.filter(project => {
 
             const matchStatus = currentFilter === 'all' 
-                || project.project_status === currentFilter;
+                || project.project_status === currentFilter || project.priority === currentFilter;
 
             const matchSearch = project.project_name
                 .toLowerCase()
