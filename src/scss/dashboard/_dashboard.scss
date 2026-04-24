@@ -3,21 +3,22 @@
 
 .content{
     display: flex;
-    flex-direction: column;
     @include m.tablet{
         flex-direction: row;
     }
 }
 .main_cont{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2rem;
+    // background-color: $blanco;
     overflow-y: auto;
     height: 100vh;
     padding: 3rem;
-    flex: 1;
-    // background-color: $grisClaro;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    border-radius: 12px 0 0 12px;
 }
+
 .m-title{
     text-align: center;
     margin: 0;

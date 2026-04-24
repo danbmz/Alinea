@@ -2,22 +2,60 @@
 @use 'base/mixins' as m;
 
 .sidebar{
-    max-width: 270px;
-    height: 100vh;
-    // background-color: $grisClaro;
-    padding: 3rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 100px;
+    height: 100vh;
+    padding: 3rem 1rem 3rem 1rem;
+    transition: all 1s ease;
 }
+.sidebar.active{
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.sb-menu{
+    display: flex;
+    justify-content: center;
+    transition: all 0.5s ease-in-out;   
+}
+// .sb-menu.active{
+//     // left: 0px;
+// }
+
 .sidebar_header{
     display: flex;
     justify-content: space-between;
 }
-.sb_lg-cont{
-    display: flex;
-    gap: 1rem;
+.sb-logo{
+    font-family: $fuente_headings;
+    font-size: 3rem;
+    font-weight: bold;
 }
+.sb-button{
+    border: none;
+    background: none;
+    cursor: pointer;
+    i{
+        font-size: 20px;
+        color: $morado;
+        padding: .8rem;
+        border-radius: 4px;
+        &:hover{
+            background-color: $grisClaro;
+        }
+    }
+    span{
+        font-size: 1.2rem;
+    }
+}
+.no-padding{
+    padding: 0;
+}
+
+
 .sb_head-cont{
     display: flex;
     flex-direction: column;
@@ -28,18 +66,38 @@
     flex-direction: column;
     gap: 2rem;
 }
-.sb_card-title{
-    display: inline-block;
-    font-weight: bold;
-    color: $cyan;
-    margin-bottom: 1rem;
+.sb-list-link{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: center;
+    justify-content: center;
+    span{
+        font-size: 1rem;
+        text-align: center;
+        color: $gris;
+    }
 }
+.sb_link{
+    font-size: 17px;
+    padding: .8rem;
+    border-radius: 4px;
+    &:hover{
+        background-color: $grisClaro;
+    }
+}
+.sb_link.active{
+    background-color: $grisClaro;
+}
+
 .sb_card-nav{
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
-.sb_link{
-    padding-left: 1rem;
-    ;
+
+.sb-footer{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }

@@ -14,9 +14,10 @@ body {
     font-size: 1.6rem;
     min-height: 100%;
     background-color: $grisClaro;
-    // &.no-scroll {
-    //     overflow: hidden;
-    // }
+    position: relative;
+    &.no-scroll {
+        overflow: hidden;
+    }
 }
 a {
     text-decoration: none;
@@ -24,7 +25,11 @@ a {
 img {
     max-width: 100%;
 }
-
+.button{
+    i{
+        pointer-events: none;
+    }
+}
 .container {
     width: 95%;
     max-width: 1200px;

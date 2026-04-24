@@ -14,5 +14,14 @@ import { showModal } from "../../components/modals.js";
             }
         })
     }
+
+    // Resaltar Icono de ruta actual
+    const currentPath = window.location.pathname;
+
+    document.querySelectorAll('.sb_link').forEach(link => {
+        if(link.getAttribute('href') === currentPath){
+            link.classList.add('active');
+        }
+    });
 }))();
     

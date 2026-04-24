@@ -9,6 +9,7 @@ export function showModal(message, type, location, buttonText = 'Cerrar') {
     messagePara.textContent = message;
 
     const closeButton = document.createElement('button');
+    closeButton.classList.add('btn');
     closeButton.textContent = buttonText;
     closeButton.addEventListener('click', () => {
         document.body.removeChild(modalContainer);

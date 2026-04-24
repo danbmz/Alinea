@@ -1,41 +1,41 @@
 <aside class="sidebar">
     <div class="sb_head-cont">
-        <div class="sidebar_header">
-            <div class="sb_lg-cont">
-                <div class="sb_logo">Logo</div>
-                <span class="sb_title">Alinea</span>
-            </div>
-            <button class="sb_toggle">Menu</button>
-        </div>
         <div class="sidebar_main">
             <div class="sb_card">
-                <span class="sb_card-title">Menu principal</span>
                 <nav class="sb_card-nav">
-                    <a href="/user/dashboard" class="sb_link">Dashboard</a>
-                    <a href="/user/projects/create" class="sb_link">Crear Proyecto</a>
-                    <a href="/user/projects" class="sb_link">Proyectos</a>
-                    <a href="" class="sb_link">Calendario</a>
-                </nav>
-            </div>
-            <div class="sb_card">
-                <span class="sb_card-title">Tareas iniciadas</span>
-                <nav class="sb_card-nav">
-                    <a href="" class="sb_link">Tarea 1</a>
-                    <a href="" class="sb_link">Tarea 2</a>
-                    <a href="" class="sb_link">Tarea 3</a>
-                </nav>
-            </div>
-            <div class="sb_card">
-                <span class="sb_card-title">Otras opciones</span>
-                <nav class="sb_card-nav">
-                    <a href="" class="sb_link">Centro de ayuda</a>
-                    <a href="" class="sb_link">Configuración</a>
-                    <a href="" class="sb_link"></a>
+                    <div class="sb-list-link">
+                        <a href="/user/dashboard" class="sb_link"> <i class="fa-solid fa-house"></i> </a>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="sb-list-link">
+                        <a href="/user/projects/create" class="sb_link">  <i class="fa-solid fa-plus"></i> </a>
+                        <span>Crear</span>
+                    </div>
+                    <div class="sb-list-link">
+                        <a href="/user/projects" class="sb_link"> <i class="fa-solid fa-folder"></i> </a>
+                        <span>Proyectos</span>
+                    </div>
+                    <div class="sb-list-link">
+                        <a href="" class="sb_link"> <i class="fa-solid fa-calendar"></i> </a>
+                        <span>Calendario</span>
+                    </div>
                 </nav>
             </div>
         </div>
     </div>
-    <div class="sb_footer">
-        <button class="sb_btn-logout">Log Out</button>
+    <div class="sb-footer">
+            <div class="sb_card">
+                <nav class="sb_card-nav">
+                    <div class="sb-list-link">
+                        <button class="sb-button"> <i class="fa-solid fa-ellipsis"></i> </button>
+                        <span class="no-padding">Más</span>
+                    </div>
+                    <div class="sb-list-link">
+                        <a href="" class="sb_link"> <i class="fa-solid fa-gear"></i> </a>
+                        <span>Configuración</span>
+                    </div>
+                </nav>
+            </div>
+        <button class="sb_btn-logout btn" aria-label="Cerrar sesión"> <i class="fa-solid fa-right-from-bracket"></i> </button>
     </div>
 </aside>

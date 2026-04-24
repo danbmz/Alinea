@@ -11,12 +11,17 @@
         margin: 0;
     }
 }
-.header_cont{
+.header-cont{
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 .header_links{
     display: flex;
     gap: 1rem;
+    align-items: center;
+}
+.header-title{
+    display: flex;
     align-items: center;
 }

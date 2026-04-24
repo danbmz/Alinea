@@ -15,7 +15,7 @@ class DashboardController {
         // Si esta logeado, mostramos la vista
         $router->render('dashboard/index', [
             'name' => $_SESSION['name'],
-            'title' => 'Dashboard'
+            'title' => 'ALINEA'
         ], 'dashboard');
     } 
     public static function projects(Router $router) {
