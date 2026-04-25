@@ -30,7 +30,7 @@ export function validateNewProjectForm(data) {
     selectedDate.setHours(0, 0, 0, 0);
 
     if (selectedDate < today) {
-        errors.push('La fecha de entrega no puede ser anterior al día de hoy.');
+        errors.push('La fecha de entrega no puede ser hoy o anterior al día de hoy.');
     }
 
     if (!data.color || !/^#([0-9A-Fa-f]{6})$/.test(data.color)) {

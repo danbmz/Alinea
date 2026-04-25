@@ -1,8 +1,5 @@
 <h1 class="m-title"><?php echo $title; ?></h1>
 
-
-
-<!-- Contenedor para los proyectos -->
 <div class='task-container' >
     <div class="project-desc">
         <p><?php echo $description; ?></p>

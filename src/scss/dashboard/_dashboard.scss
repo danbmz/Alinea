@@ -12,7 +12,6 @@
     flex: 1;
     flex-direction: column;
     gap: 2rem;
-    // background-color: $blanco;
     overflow-y: auto;
     height: 100vh;
     padding: 3rem;
@@ -23,4 +22,166 @@
     text-align: center;
     margin: 0;
     font-size: 3rem;
+}
+
+.dash-container{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+// -------- SECTION DEL TIMLEINE
+.timeline{
+    position: relative;
+    padding: 9rem 2rem 4rem 2rem;
+    background-color: $blanco;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+}
+.time-line{
+    position: absolute;
+    top: 25%;          /* alineada al centro del círculo */
+    left: 10%;       /* empieza en el primer círculo */
+    right: 10%;      /* termina en el último círculo */
+    height: 1.5px;
+    background: $grisOscuro;
+    z-index: 0;
+}
+.time-circle{
+    position: absolute;
+    top: 17%;
+    width: 25px;
+    height: 25px;
+    background-color: $blanco;
+    border: 2px solid $grisOscuro;
+    border-radius: 50%;
+}
+.time-circle.active::before,
+.time-circle.active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: $red;
+    animation: sonar 2s infinite;
+}
+.time-circle.active::before {
+    animation-delay: 0s;
+}
+
+.time-circle.active::after {
+    animation-delay: 1s;
+}
+
+.time-content{
+    display: flex;
+    justify-content: space-around;
+}
+
+.time-class{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+.time-name{
+    font-size: 1.3rem;
+    color: $grisOscuro;
+}
+.time-date{
+    font-size: 1rem;
+    color: $gris;
+}
+
+// ---------- SECTION DEL CONTINUE
+.todays-projects{
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.project-card{
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+    background-color: $blanco;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+}
+.project-hero{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.project-name{
+    flex: 1;
+    font-size: 1.4rem;
+    color: $grisOscuro;
+}
+.project-pro{
+    flex: 2;
+    font-size: 1.2rem;
+    box-shadow: inset 0 0px 2px rgba(0, 0, 0, .25);
+    background-color: rgba(161, 161, 161, .1607843137);
+    padding: .4rem .6rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: $grisOscuro;
+    #avance{
+        height: 16px;
+    }
+}
+
+.project-details{
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 1rem;
+}
+.project-prio{
+    display: flex;
+    justify-content: center;
+    color: $blanco;
+    border-radius: 8px;
+    padding: .5rem .7rem;
+    font-size: 1.4rem;
+    width: 50px;
+}
+.priority-alt{
+    background-color: $red;
+}
+.priority-med{
+    background-color: $orange;
+}
+.priority-baj{
+    background-color: $blue;
+}
+.project-left{
+    font-size: 1.4rem;
+    color: $grisOscuro;
+}
+
+
+// ANIMACIONES
+@keyframes sonar {
+        0% {
+        transform: scale(0.5);
+        opacity: 0.7;
+    }
+    70% {
+        transform: scale(2);
+        opacity: 0.2;
+    }
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
 }
